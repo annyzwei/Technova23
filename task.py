@@ -1,4 +1,9 @@
+import numpy as np
 
+
+"""Creates a task object. To create an object: import task, and call task.Task("activity", "occurrence", "describe")
+where occurrence is either "daily" or "weekly" (other gives time = 0)
+    """
 class Task():
     def __init__(self, activityName, occurrence, describe: str = ""):
         # Task/Ticket Properties
@@ -13,6 +18,20 @@ class Task():
             self.time = 1
         else:
             self.time = 0
+            
+        self.doing = np.full(self.time, False)
+    
+    # Determines whether the task was completed or not
+    def isFinished(self):
+        finished = False
+        for i in range(len(self.doing)):
+            if self.doing[i]:
+                finished = True
+            else:
+                finished = False
+                break
+        
+        return finished
            
     
 
