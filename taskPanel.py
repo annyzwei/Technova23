@@ -10,7 +10,7 @@ class ScrollBar(object):
         self.change_y = 0
             
         bar_height = int((screen_height - 40) / (image_height / (screen_height * 1.0)))
-        self.bar_rect = pygame.Rect(screen_width - 20,20,20,bar_height)
+        self.bar_rect = pg.Rect(screen_width - 20,20,20,bar_height)
         self.bar_up = pg.Rect(screen_width - 20,0,20,20)
         self.bar_down = pg.Rect(screen_width - 20,screen_height - 20,20,20)
         
