@@ -1,9 +1,20 @@
 # Imports
 import pygame as pg
-import rungame
+import rungame as rg
 
+# Initialise panel/surface
+screen_ratio = 0.4
+background = pg.Surface(rg.DISPLAY_WIDTH * screen_ratio, 
+                        rg.DISPLAY_HEIGHT * screen_ratio)  # where screen is the size of the main screen from rungame
+background = background.convert()           # converts to a single pixel format (speed up run time)
+background.fill((250, 250, 250))            # background colour: white 
 
-class ScrollBar(object):
+screen_width = rg.DISPLAY_WIDTH * screen_ratio
+screen_height = rg.DISPLAY_HEIGHT * screen_ratio
+
+class taskPanel():
+    #rg.gameDisplay
+    
     def __init__(self,image_height):
         self.y_axis = 0
         self.image_height = image_height
@@ -78,19 +89,10 @@ class ScrollBar(object):
         
         screen.blit(self.bar_up_image,(screen_width - 20,0))
         screen.blit(self.bar_down_image,(screen_width - 20,screen_height - 20))
-   
-   
-
-class taskPanel():
-
-    # Initialise panel/surface
-    screen_ratio = 0.4
-    background = pg.Surface(screen.get_size() * screen_ratio)  # where screen is the size of the main screen from rungame
-    background = background.convert()           # converts to a single pixel format (speed up run time)
-    background.fill((250, 250, 250))            # background colour: white 
+        
+    # When user clicks on a task, pause keyboard listener at this level
     
-    screen_width = screen.get_width() * screen_ratio
-    screen_height = screen.get_height() * screen_ratio
+    
     
     
     # need to blit objects!! (like show/refresh/place)
@@ -102,12 +104,13 @@ class taskPanel():
     WHITE = (255,255,255)
     
      # Used to manage how fast the screen updates
-    #clock = pg.time.Clock()
+    clock = pg.time.Clock()
     
     # Load Image:
     image = pg.image.load("instruments.png").convert()
     # Create scrollbar object 
-    scrollbar = ScrollBar(image.get_height())
+    scrollbar = taskPanel()#image.get_height())
+    
     # -------- Main Program Loop -----------
     while not done:
         # --- Main event loop
@@ -121,21 +124,22 @@ class taskPanel():
         scrollbar.update()
         # First, clear the screen to white. Don't put other drawing commands
         # above this, or they will be erased with this command.
-        screen.fill((255,255,255))
+        background.fill((255,255,255))
 
         # --- Drawing code should go here
-        screen.blit(image,(0,scrollbar.y_axis))
+        background.blit(image,(0,scrollbar.y_axis))
         scrollbar.draw(screen)
         # --- Go ahead and update the screen with what we've drawn.
         pg.display.flip()
 
-        # --- Limit to 30 frames per second
-        clock.tick(30)
+        # --- Limit to 45 frames per second
+        clock.tick(45)
 
     # Close the window and quit.
     # If you forget this line, the program will 'hang'
     # on exit if running from IDLE.
-    pg.quit()         
+    pg.quit()  
+       
         
 
 #def main():
