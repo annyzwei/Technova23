@@ -2,6 +2,7 @@ import xlwings as xw
 import os
 from pprint import pprint
 from datetime import datetime
+import time
 
 ws = xw.Book("Health Data Technova.xlsx").sheets['Workout Data']
 
@@ -57,4 +58,9 @@ for entry in workout_data[1:]:
 wrkout_collection.pop(1)
 
 pprint(wrkout_collection)
+
+while True:
+    t = time.localtime
+    print(time.strftime("%H:%M:%S", t))
+    time.sleep(60)
 
