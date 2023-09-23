@@ -75,6 +75,7 @@ def menu():
         textRect.center = (400, 200)
         gameDisplay.blit(textSurf, textRect)
 
+
        # displayDragonAnimation()
 
        # displayProfile()
