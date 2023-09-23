@@ -1,18 +1,28 @@
 import pygame as pg
-
+from datetime import datetime, timedelta
+from manipulate_health_data import wrkout_collection
 
 pg.init()
+
 
 DISPLAY_WIDTH = 600
 DISPLAY_HEIGHT = 1100
 BLACK = (0, 0, 0)
 GREEN = (0,200,0)
 BRIGHT_GREEN = (0,255,0)
+LIGHT_BLUE = (202, 239, 250)
+WHITE = (255, 255, 255)
+
+DRAGON_ANIMATION_HEIGHT = 300
 
 
+dragon_sprite = pg.image.load("assets/dragon.png")
 
 gameDisplay = pg.display.set_mode((DISPLAY_WIDTH, DISPLAY_HEIGHT))
 pg.display.set_caption("A Dragon's Guide to Power")
+
+goals = []
+gameRun = True
 
 
 def textObjects(text, font, colour):
@@ -42,24 +52,44 @@ def button(text, x, y, width, height, size, icolour, acolour, action = None):
     gameDisplay.blit(textSurf, textRect)
 
 def skillsPage():
-    largeText = pg.font.Font('freesansbold.ttf', 20)
-    textSurf, textRect = textObjects("HIGHSCORE: ", largeText, BRIGHT_GREEN)   
-    textRect.center = (400, 300)
-    gameDisplay.blit(textSurf, textRect)
-    
-def menu():
-    gameRun = True
+    while True:
+        gameRun = False
+        largeText = pg.font.Font('freesansbold.ttf', 20)
+        textSurf, textRect = textObjects("HIGHSCORE: ", largeText, BRIGHT_GREEN)   
+        textRect.center = (400, 300)
+        gameDisplay.blit(textSurf, textRect)
+        pg.display.update()
 
+def dragonAnimation():
+    pg.draw.rect(gameDisplay, LIGHT_BLUE, [0, 0, DISPLAY_WIDTH, DRAGON_ANIMATION_HEIGHT])
+    dragon_sprite_small = pg.transform.scale(dragon_sprite, (170, 100))
+    gameDisplay.blit(dragon_sprite_small, (300, 100))
+
+def menu():
+    d = datetime(2023, 9, 1)
+
+    start_time = datetime.now()
     while gameRun:
+        if (datetime.now() - start_time).total_seconds() > 5:
+            start_time = datetime.now()
+            d += timedelta(days=1)
+
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 pg.quit()
                 gameExit = False
                 quit()
-        gameDisplay.fill(BLACK)
+        gameDisplay.fill(WHITE)
 
+        dragonAnimation()
 
-       # displayDragonAnimation()
+        largeText = pg.font.SysFont('garamond', 20)
+        textSurf, textRect = textObjects("Date: " + str(d.date()), largeText, BLACK)   
+        textRect.center = (400, 200)
+        gameDisplay.blit(textSurf, textRect)
+
+        
+
 
 
        # displayProfile()
@@ -69,7 +99,7 @@ def menu():
         button("Skills", 50, 400, 100, 75, 20, GREEN, BRIGHT_GREEN, skillsPage )
 
         button("Story", 450, 400, 100, 75, 20, GREEN, BRIGHT_GREEN, skillsPage )
-      
+
         pg.display.update()
 
 menu()
