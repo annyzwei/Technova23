@@ -57,10 +57,19 @@ for entry in workout_data[1:]:
 
 wrkout_collection.pop(1)
 
-pprint(wrkout_collection)
 
-while True:
-    t = time.localtime
-    print(time.strftime("%H:%M:%S", t))
-    time.sleep(60)
+index = 1
+
+day = 0
+while False:
+    day += 1
+    d = datetime(2023, 9, day)
+    print(d)
+    for workout in wrkout_collection[index:]:
+        workout_date = datetime(int(workout[0][0:4]), int(workout[0][5:7]), int(workout[0][8:10]))
+        if d > workout_date:
+            print("activity:" + " " + str(workout[4]))
+            index+=1
+    time.sleep(10)
+        
 
