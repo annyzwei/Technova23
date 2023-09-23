@@ -1,5 +1,6 @@
 import pygame as pg
 
+
 pg.init()
 
 DISPLAY_WIDTH = 600
@@ -9,8 +10,10 @@ GREEN = (0,200,0)
 BRIGHT_GREEN = (0,255,0)
 
 
+
 gameDisplay = pg.display.set_mode((DISPLAY_WIDTH, DISPLAY_HEIGHT))
 pg.display.set_caption("A Dragon's Guide to Power")
+
 
 def textObjects(text, font, colour):
     textSurface = font.render(text, True, colour)
@@ -55,6 +58,7 @@ def menu():
                 quit()
         gameDisplay.fill(BLACK)
 
+
        # displayDragonAnimation()
 
 
@@ -67,7 +71,5 @@ def menu():
         button("Story", 450, 400, 100, 75, 20, GREEN, BRIGHT_GREEN, skillsPage )
       
         pg.display.update()
-
-
 
 menu()
