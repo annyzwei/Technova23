@@ -11,7 +11,13 @@ DISPLAY_HEIGHT = 1000
 BLACK = (0, 0, 0)
 GREEN = (0,200,0)
 BRIGHT_GREEN = (0,255,0)
+LIGHT_BLUE = (202, 239, 250)
 WHITE = (255, 255, 255)
+
+DRAGON_ANIMATION_HEIGHT = 300
+
+
+dragon_sprite = pg.image.load("assets/dragon.png")
 
 gameDisplay = pg.display.set_mode((DISPLAY_WIDTH, DISPLAY_HEIGHT))
 pg.display.set_caption("A Dragon's Guide to Power")
@@ -58,7 +64,6 @@ def skillsPage():
         pg.display.update()
         clock.tick(60)
 
-
 def newGoalPage():
     while True:
         print("new goal")
@@ -71,6 +76,16 @@ def newGoalPage():
         button("Menu", 50, 400, 100, 75, 20, GREEN, BRIGHT_GREEN, menu )
         pg.display.update()
         clock.tick(60)
+
+def dragonAnimation():
+    pg.draw.rect(gameDisplay, LIGHT_BLUE, [0, 0, DISPLAY_WIDTH, DRAGON_ANIMATION_HEIGHT])
+    dragon_sprite_small = pg.transform.scale(dragon_sprite, (170, 100))
+    gameDisplay.blit(dragon_sprite_small, (300, 100))
+
+def dragonAnimation():
+    pg.draw.rect(gameDisplay, LIGHT_BLUE, [0, 0, DISPLAY_WIDTH, DRAGON_ANIMATION_HEIGHT])
+    dragon_sprite_small = pg.transform.scale(dragon_sprite, (170, 100))
+    gameDisplay.blit(dragon_sprite_small, (300, 100))
 
 def menu():
     d = datetime(2023, 9, 1)
@@ -89,13 +104,15 @@ def menu():
                 quit()
         gameDisplay.fill(WHITE)
 
+        dragonAnimation()
+
         largeText = pg.font.SysFont('garamond', 20)
         textSurf, textRect = textObjects("Date: " + str(d.date()), largeText, BLACK)   
         textRect.center = (400, 200)
         gameDisplay.blit(textSurf, textRect)
 
+        
 
-       # displayDragonAnimation()
 
        # displayProfile()
 
