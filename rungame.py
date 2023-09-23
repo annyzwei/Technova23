@@ -1,7 +1,8 @@
 import pygame as pg
 from datetime import datetime, timedelta
 from manipulate_health_data import wrkout_collection
-from pgu import gui
+import time
+import sys
 
 pg.init()
 
@@ -14,10 +15,11 @@ WHITE = (255, 255, 255)
 
 gameDisplay = pg.display.set_mode((DISPLAY_WIDTH, DISPLAY_HEIGHT))
 pg.display.set_caption("A Dragon's Guide to Power")
+clock = pg.time.Clock()
 
 goals = []
 gameRun = True
-
+newGoalRun = True
 
 def textObjects(text, font, colour):
     textSurface = font.render(text, True, colour)
@@ -29,7 +31,7 @@ def button(text, x, y, width, height, size, icolour, acolour, action = None):
     #Detects user input from mouse
     mouse = pg.mouse.get_pos()
     click = pg.mouse.get_pressed()
-
+    print(click)
     #Checks position of mouse to be in the button area
     if x+width > mouse[0] > x and y+height > mouse[1] > y:
         pg.draw.rect(gameDisplay, acolour,(x, y, width, height))
@@ -48,17 +50,34 @@ def button(text, x, y, width, height, size, icolour, acolour, action = None):
 def skillsPage():
     while True:
         gameRun = False
+        gameDisplay.fill(WHITE)
         largeText = pg.font.Font('freesansbold.ttf', 20)
         textSurf, textRect = textObjects("HIGHSCORE: ", largeText, BRIGHT_GREEN)   
         textRect.center = (400, 300)
         gameDisplay.blit(textSurf, textRect)
         pg.display.update()
+        clock.tick(60)
+
+
+def newGoalPage():
+    while True:
+        print("new goal")
+        gameRun = False
+        gameDisplay.fill(WHITE)
+        largeText = pg.font.Font('freesansbold.ttf', 20)
+        textSurf, textRect = textObjects("Add A New Goal: ", largeText, BRIGHT_GREEN)   
+        textRect.center = (400, 300)
+        gameDisplay.blit(textSurf, textRect)
+        button("Menu", 50, 400, 100, 75, 20, GREEN, BRIGHT_GREEN, menu )
+        pg.display.update()
+        clock.tick(60)
 
 def menu():
     d = datetime(2023, 9, 1)
-
+    gameRun = True
     start_time = datetime.now()
     while gameRun:
+        print("menu")
         if (datetime.now() - start_time).total_seconds() > 5:
             start_time = datetime.now()
             d += timedelta(days=1)
@@ -83,8 +102,9 @@ def menu():
       #  displayMissions()
 
         button("Skills", 50, 400, 100, 75, 20, GREEN, BRIGHT_GREEN, skillsPage )
-        button("+ Goal", 50, 500, 100, 75, 20, GREEN, BRIGHT_GREEN)
+        button("+ Goal", 50, 500, 100, 75, 20, GREEN, BRIGHT_GREEN, newGoalPage)
 
         pg.display.update()
+        clock.tick(60)
 
 menu()
