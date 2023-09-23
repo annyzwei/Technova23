@@ -36,25 +36,54 @@ def textObjects(text, font, colour):
 
 def skillsPage():
     while True:
-        gameRun = False
+        PLAY_MOUSE_POS = pg.mouse.get_pos()
         gameDisplay.fill(WHITE)
         largeText = pg.font.Font('freesansbold.ttf', 20)
         textSurf, textRect = textObjects("HIGHSCORE: ", largeText, BRIGHT_GREEN)   
         textRect.center = (400, 300)
         gameDisplay.blit(textSurf, textRect)
         pg.display.update()
+        MAINMENU = Button(image=None, pos=(640, 460), 
+                            text_input="MAIN MENU", font=largeText, base_color=GREEN, hovering_color=BRIGHT_GREEN)
+
+        MAINMENU.changeColor(PLAY_MOUSE_POS)
+        MAINMENU.update(gameDisplay)
+
+
+        for event in pg.event.get():
+            if event.type == pg.QUIT:
+                pg.quit()
+                sys.exit()
+            if event.type == pg.MOUSEBUTTONDOWN:
+                if MAINMENU.checkForInput(PLAY_MOUSE_POS):
+                    menu()
+        pg.display.update()
         #clock.tick(60)
 
 def newGoalPage():
     while True:
-        print("new goal")
-        gameRun = False
+        PLAY_MOUSE_POS = pg.mouse.get_pos()
         gameDisplay.fill(WHITE)
         largeText = pg.font.Font('freesansbold.ttf', 20)
         textSurf, textRect = textObjects("Add A New Goal: ", largeText, BRIGHT_GREEN)   
         textRect.center = (400, 300)
         gameDisplay.blit(textSurf, textRect)
        # button("Menu", 50, 400, 100, 75, 20, GREEN, BRIGHT_GREEN, menu )
+        pg.display.update()
+        MAINMENU = Button(image=None, pos=(640, 460), 
+                            text_input="MAIN MENU", font=largeText, base_color=GREEN, hovering_color=BRIGHT_GREEN)
+
+        MAINMENU.changeColor(PLAY_MOUSE_POS)
+        MAINMENU.update(gameDisplay)
+
+
+        for event in pg.event.get():
+            if event.type == pg.QUIT:
+                pg.quit()
+                sys.exit()
+            if event.type == pg.MOUSEBUTTONDOWN:
+                if MAINMENU.checkForInput(PLAY_MOUSE_POS):
+                    menu()
         pg.display.update()
         #clock.tick(60)
 
@@ -74,7 +103,6 @@ def menu():
     start_time = datetime.now()
 
     while gameRun:
-        print("menu")
         PLAY_MOUSE_POS = pg.mouse.get_pos()
 
         if (datetime.now() - start_time).total_seconds() > 5:
