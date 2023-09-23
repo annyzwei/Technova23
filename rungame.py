@@ -1,16 +1,23 @@
 import pygame as pg
+from datetime import datetime, timedelta
+from manipulate_health_data import wrkout_collection
+from pgu import gui
 
 pg.init()
 
 DISPLAY_WIDTH = 800
-DISPLAY_HEIGHT = 1200
+DISPLAY_HEIGHT = 1000
 BLACK = (0, 0, 0)
 GREEN = (0,200,0)
 BRIGHT_GREEN = (0,255,0)
-
+WHITE = (255, 255, 255)
 
 gameDisplay = pg.display.set_mode((DISPLAY_WIDTH, DISPLAY_HEIGHT))
 pg.display.set_caption("A Dragon's Guide to Power")
+
+goals = []
+gameRun = True
+
 
 def textObjects(text, font, colour):
     textSurface = font.render(text, True, colour)
@@ -39,21 +46,34 @@ def button(text, x, y, width, height, size, icolour, acolour, action = None):
     gameDisplay.blit(textSurf, textRect)
 
 def skillsPage():
-    largeText = pg.font.Font('freesansbold.ttf', 20)
-    textSurf, textRect = textObjects("HIGHSCORE: ", largeText, BRIGHT_GREEN)   
-    textRect.center = (400, 300)
-    gameDisplay.blit(textSurf, textRect)
-    
-def menu():
-    gameRun = True
+    while True:
+        gameRun = False
+        largeText = pg.font.Font('freesansbold.ttf', 20)
+        textSurf, textRect = textObjects("HIGHSCORE: ", largeText, BRIGHT_GREEN)   
+        textRect.center = (400, 300)
+        gameDisplay.blit(textSurf, textRect)
+        pg.display.update()
 
+def menu():
+    d = datetime(2023, 9, 1)
+
+    start_time = datetime.now()
     while gameRun:
+        if (datetime.now() - start_time).total_seconds() > 5:
+            start_time = datetime.now()
+            d += timedelta(days=1)
+
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 pg.quit()
                 gameExit = False
                 quit()
-        gameDisplay.fill(BLACK)
+        gameDisplay.fill(WHITE)
+
+        largeText = pg.font.SysFont('garamond', 20)
+        textSurf, textRect = textObjects("Date: " + str(d.date()), largeText, BLACK)   
+        textRect.center = (400, 200)
+        gameDisplay.blit(textSurf, textRect)
 
        # displayDragonAnimation()
 
@@ -62,8 +82,8 @@ def menu():
       #  displayMissions()
 
         button("Skills", 50, 400, 100, 75, 20, GREEN, BRIGHT_GREEN, skillsPage )
+        button("+ Goal", 50, 500, 100, 75, 20, GREEN, BRIGHT_GREEN)
+
         pg.display.update()
-
-
 
 menu()
