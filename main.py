@@ -227,7 +227,7 @@ def instructions():
         pygame.display.update()
         clock.tick(40)
 
-def 
+ 
 
 #Code to run the actual game
 def gameLoop():
