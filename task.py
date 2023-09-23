@@ -1,12 +1,20 @@
 
 class Task():
+    def __init__(self, activityName, occurrence, describe: str = ""):
+        # Task/Ticket Properties
+        # Tasks include: Activity Name, Description, Times, Completed(boolean)
+        self.activity = activityName
+        self.description = describe
+        self.completed = False
+        
+        if occurrence == "daily":
+            self.time = 7
+        elif occurrence == "weekly":
+            self.time = 1
+        else:
+            self.time = 0
+           
     
-    # Task/Ticket Properties
-    # Tasks include: Activity Name, Description, Times, Completed(boolean)
-    activityName = ""
-    description = ""
-    time = ""
-    completed = False
 
 # Our app suggested ones (suggest 1 per day)
 
