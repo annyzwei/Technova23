@@ -37,15 +37,16 @@ def button(text, x, y, width, height, size, icolour, acolour, action = None):
     #Detects user input from mouse
     mouse = pg.mouse.get_pos()
     click = pg.mouse.get_pressed()
-    print(click)
+
     #Checks position of mouse to be in the button area
-    if x+width > mouse[0] > x and y+height > mouse[1] > y:
-        pg.draw.rect(gameDisplay, acolour,(x, y, width, height))
-        if click[0] == 1 and action != None:
-            action() #activates action
-    else:
-        #Changes button colour
-        pg.draw.rect(gameDisplay, icolour,(x, y, width, height))
+    for event in pg.event.get():
+        if x+width > mouse[0] > x and y+height > mouse[1] > y:
+            pg.draw.rect(gameDisplay, acolour,(x, y, width, height))
+            if event.type == pg.MOUSEBUTTONDOWN:
+                action() #activates action
+        else:
+            #Changes button colour
+            pg.draw.rect(gameDisplay, icolour,(x, y, width, height))
 
     #Text of button
     largeText = pg.font.Font('freesansbold.ttf', size)
@@ -62,7 +63,7 @@ def skillsPage():
         textRect.center = (400, 300)
         gameDisplay.blit(textSurf, textRect)
         pg.display.update()
-        clock.tick(60)
+        #clock.tick(60)
 
 def newGoalPage():
     while True:
@@ -75,7 +76,7 @@ def newGoalPage():
         gameDisplay.blit(textSurf, textRect)
         button("Menu", 50, 400, 100, 75, 20, GREEN, BRIGHT_GREEN, menu )
         pg.display.update()
-        clock.tick(60)
+        #clock.tick(60)
 
 def dragonAnimation():
     pg.draw.rect(gameDisplay, LIGHT_BLUE, [0, 0, DISPLAY_WIDTH, DRAGON_ANIMATION_HEIGHT])
@@ -122,6 +123,6 @@ def menu():
         button("+ Goal", 50, 500, 100, 75, 20, GREEN, BRIGHT_GREEN, newGoalPage)
 
         pg.display.update()
-        clock.tick(60)
+        #clock.tick(60)
 
 menu()
