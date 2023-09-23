@@ -2,8 +2,8 @@ import pygame as pg
 
 pg.init()
 
-DISPLAY_WIDTH = 800
-DISPLAY_HEIGHT = 1200
+DISPLAY_WIDTH = 600
+DISPLAY_HEIGHT = 1100
 BLACK = (0, 0, 0)
 GREEN = (0,200,0)
 BRIGHT_GREEN = (0,255,0)
@@ -57,11 +57,15 @@ def menu():
 
        # displayDragonAnimation()
 
+
        # displayProfile()
 
       #  displayMissions()
 
         button("Skills", 50, 400, 100, 75, 20, GREEN, BRIGHT_GREEN, skillsPage )
+
+        button("Story", 450, 400, 100, 75, 20, GREEN, BRIGHT_GREEN, skillsPage )
+      
         pg.display.update()
 
 
