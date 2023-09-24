@@ -5,8 +5,8 @@ from attributes import appConsts
 
 # scroll bar: from https://github.com/edward344/scrollbar/blob/master/scrollbar.py
 
-screen_width = appConsts.DISPLAY_WIDTH * 0.74 # 640 if remove black space (no visual scroll bar?)
-screen_height = appConsts.DISPLAY_HEIGHT * 0.29# 480
+screen_width = 640 #appConsts.DISPLAY_WIDTH * 0.74 # 640 if remove black space (no visual scroll bar?)
+screen_height = 480 #appConsts.DISPLAY_HEIGHT * 0.29# 480
 
 GRAY = (197,194,197)
 BLUE =(0,0,255)

@@ -21,6 +21,12 @@ BLACK = (0, 0, 0)
 GREEN = (0,200,0)
 BRIGHT_GREEN = (0,255,0)
 LIGHT_BLUE = (202, 239, 250)
+ROYAL_BLUE = (36, 100, 201)
+PERIWINKLE = (204, 204, 255)
+INDIGO = (83, 83, 237)
+LIGHT_PINK = (209, 167, 197)
+BROWN_PINK = (153, 98, 128)
+BROWN = (56, 34, 18)
 WHITE = (255, 255, 255)
 BEIGE = (250, 241, 225)
 RED = (250, 0, 0)
@@ -83,12 +89,12 @@ def skillsPage():
     gameDisplay.fill(WHITE)
     while True:
         PLAY_MOUSE_POS = pg.mouse.get_pos()
-        textSurf, textRect = textObjects("HIGHSCORE: ", largeText, BRIGHT_GREEN)   
+        textSurf, textRect = textObjects("HIGHSCORE: ", largeText, INDIGO)   
         textRect.center = (400, 300)
         gameDisplay.blit(textSurf, textRect)
         pg.display.update()
         MAINMENU = Button(image=None, pos=(640, 460), 
-                            text_input="MAIN MENU", font=largeText, base_color=GREEN, hovering_color=BRIGHT_GREEN)
+                            text_input="MAIN MENU", font=largeText, base_color=BROWN, hovering_color=BROWN_PINK)
 
         MAINMENU.changeColor(PLAY_MOUSE_POS)
         MAINMENU.update(gameDisplay)
@@ -117,11 +123,11 @@ def newGoalPage():
     time_text = ""
     while True:
         PLAY_MOUSE_POS = pg.mouse.get_pos()
-        textSurf, textRect = textObjects("Activity: ", largeText, BRIGHT_GREEN)   
+        textSurf, textRect = textObjects("Activity: ", largeText, ROYAL_BLUE)   
         textRect.midright = (300, 450)
-        textSurf_dist, textRect_dist = textObjects("Distance(km): ", largeText, BRIGHT_GREEN)   
+        textSurf_dist, textRect_dist = textObjects("Distance(km): ", largeText, ROYAL_BLUE)   
         textRect_dist.midright = (300, 500)
-        textSurf_time, textRect_time = textObjects("Number of Days to Complete: ", largeText, BRIGHT_GREEN)   
+        textSurf_time, textRect_time = textObjects("Number of Days to Complete: ", largeText, ROYAL_BLUE)   
         textRect_time.midright = (300, 550)
         textSurf_error, textRect_error = textObjects("ERROR: Sections Not Filled Correctly ", largeText, RED)   
         textRect_error.midright = (410, 600)
@@ -131,7 +137,7 @@ def newGoalPage():
        # button("Menu", 50, 400, 100, 75, 20, GREEN, BRIGHT_GREEN, menu )
         pg.display.update()
         MAINMENU = Button(image=None, pos=(500, 375), 
-                            text_input="MAIN MENU", font=largeText, base_color=GREEN, hovering_color=BRIGHT_GREEN)
+                            text_input="MAIN MENU", font=largeText, base_color=BROWN, hovering_color=BROWN_PINK)
 
         MAINMENU.changeColor(PLAY_MOUSE_POS)
         MAINMENU.update(gameDisplay)
@@ -302,14 +308,14 @@ def menu():
         # displayMissions()
 
         SKILLS = Button(image=None, pos=(200, 460), 
-                            text_input="SKILLZ", font=scrollText, base_color=GREEN, hovering_color=BRIGHT_GREEN)
+                            text_input="SKILLZ", font=scrollText, base_color=INDIGO, hovering_color=LIGHT_PINK)
 
         SKILLS.changeColor(PLAY_MOUSE_POS)
         SKILLS.update(gameDisplay)
 
               #  displayMissions()
         GOALS = Button(image=None, pos=(640, 460), 
-                            text_input="GOALS", font=scrollText, base_color=GREEN, hovering_color=BRIGHT_GREEN)
+                            text_input="GOALS", font=scrollText, base_color=INDIGO, hovering_color=LIGHT_PINK)
 
         GOALS.changeColor(PLAY_MOUSE_POS)
         GOALS.update(gameDisplay)
