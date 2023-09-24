@@ -6,6 +6,8 @@ import taskPanel, task
 from attributes import appConsts
 import sys
 import random
+import math
+import numpy as np
 
 
 pg.init()
@@ -21,6 +23,7 @@ BLACK = (0, 0, 0)
 GREEN = (0,200,0)
 BRIGHT_GREEN = (0,255,0)
 LIGHT_BLUE = (202, 239, 250)
+
 ROYAL_BLUE = (36, 100, 201)
 PERIWINKLE = (204, 204, 255)
 INDIGO = (83, 83, 237)
@@ -30,7 +33,16 @@ BROWN = (56, 34, 18)
 WHITE = (255, 255, 255)
 BEIGE = (250, 241, 225)
 RED = (250, 0, 0)
+BLUE = (140, 170, 250)
+WHITE = (255, 255, 255)
+BEIGE = (250, 241, 225)
+GRAY = (200, 200, 200)
 
+
+vvlargeText = pg.font.SysFont('garamond', 60)
+largeText = pg.font.SysFont('garamond', 20)
+mediumText = pg.font.SysFont('garamond', 15)
+smallText = pg.font.SysFont('garamond', 10)
 
 DRAGON_ANIMATION_HEIGHT = 300
 # Tree parameters
@@ -53,6 +65,7 @@ taskSurface.fill(LIGHT_BLUE)
 
 dragon_sprite = pg.image.load("assets/dragon.png")
 scroll_sprite = pg.image.load("assets/scroll.png")
+dragon_portrait = pg.image.load("assets/dragon_portrait.png")
 
 gameDisplay = pg.display.set_mode((DISPLAY_WIDTH, DISPLAY_HEIGHT))
 pg.display.set_caption("A Dragon's Guide to Power")
@@ -66,8 +79,25 @@ newGoalRun = True
 trees = []
 clouds = []
 
-for _ in range(8):  
-    x = random.randint(DISPLAY_WIDTH, DISPLAY_WIDTH * 2)
+largeText = pg.font.SysFont('garamond', 20)
+
+#skills page
+PENTAGON_X = DISPLAY_WIDTH // 2
+PENTAGON_Y = DISPLAY_HEIGHT // 2
+
+# Skill levels (values between 0 and 10)
+strength = 8
+health = 7
+speed = 6
+mana = 10
+stamina = 5
+
+#exp needed for breaking through each level
+level_exp_needed = [0, 10, 20, 40, 60, 80, 100, 120, 160, 200, 250]
+level_exp_needed_sum = [0, 10, 30, 70, 130, 210, 310, 430, 590, 790, 1040]
+
+for _ in range(15):  
+    x = random.randint(0, DISPLAY_WIDTH * 2)
     y = DRAGON_ANIMATION_HEIGHT
     trees.append((x, y))
 
@@ -85,20 +115,95 @@ def textObjects(text, font, colour):
     return textSurface, textSurface.get_rect()
 
 
+# calculating the pentagon stuff-------------------
+
+# Calculate the coordinates of the vertices for the pentagon
+def calculate_vertex_coords(radius, angle_degrees):
+    angle_radians = math.radians(angle_degrees)
+    x = PENTAGON_X + radius * math.cos(angle_radians)
+    y = PENTAGON_Y - radius * math.sin(angle_radians)
+    return x, y
+
+# Function to draw the pentagon
+def draw_pentagon():
+    outer_radius = 150
+    for line in range (6): #inner lines
+        radius = line*(outer_radius/5)
+        step = 360 / 5
+
+        for i in range(5):
+            angle_degrees = step * i
+            start_point = calculate_vertex_coords(radius, angle_degrees)
+            end_point = calculate_vertex_coords(radius, angle_degrees + step)
+            pg.draw.line(gameDisplay, GRAY, start_point, end_point, 2)
+
+# Function to draw grid lines inside the pentagon
+def draw_grid_lines():
+    step = 360 / 5
+    radius = 150
+
+    for i in range(5):
+        angle_degrees = step * i
+        end_point = calculate_vertex_coords(radius, angle_degrees)
+        pg.draw.line(gameDisplay, GRAY, (PENTAGON_X, PENTAGON_Y), end_point, 2)
+
+def draw_skills_chart():
+    draw_pentagon()
+    draw_grid_lines()
+    radius = 150
+    step = 360 / 5
+
+    points = [
+        calculate_vertex_coords(radius * (strength / 10), step * 0),
+        calculate_vertex_coords(radius * (health / 10), step * 1),
+        calculate_vertex_coords(radius * (speed / 10), step * 2),
+        calculate_vertex_coords(radius * (mana / 10), step * 3),
+        calculate_vertex_coords(radius * (stamina / 10), step * 4),
+    ]
+
+    pg.draw.polygon(gameDisplay, BLUE, points, 2)
+
+
+#--------------------
+
+
+def draw_portrait(x, y):
+    portrait_w = 200
+    portrait_h = 200
+
+    new_x = x - portrait_w/2
+    
+    pg.draw.rect(gameDisplay, GRAY, [new_x - 5, y -5, portrait_w+10, portrait_h+10])
+
+    dragon_portrait_small = pg.transform.scale(dragon_portrait, (portrait_w, portrait_h))
+    gameDisplay.blit(dragon_portrait_small, (new_x, y))
+
+
+
 def skillsPage():
     gameDisplay.fill(WHITE)
     while True:
         PLAY_MOUSE_POS = pg.mouse.get_pos()
         textSurf, textRect = textObjects("HIGHSCORE: ", largeText, INDIGO)   
         textRect.center = (400, 300)
+
+        draw_portrait(DISPLAY_WIDTH//4, 50)
+        textSurf, textRect = textObjects("Joe", vvlargeText, BRIGHT_GREEN)   
+        textRect.midright = (3*(DISPLAY_WIDTH//5), 70)
+        
         gameDisplay.blit(textSurf, textRect)
-        pg.display.update()
+
+
+        
+        
+
         MAINMENU = Button(image=None, pos=(640, 460), 
                             text_input="MAIN MENU", font=largeText, base_color=BROWN, hovering_color=BROWN_PINK)
 
         MAINMENU.changeColor(PLAY_MOUSE_POS)
         MAINMENU.update(gameDisplay)
 
+        draw_skills_chart()
 
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -124,6 +229,7 @@ def newGoalPage():
     while True:
         PLAY_MOUSE_POS = pg.mouse.get_pos()
         textSurf, textRect = textObjects("Activity: ", largeText, ROYAL_BLUE)   
+        textSurf, textRect = textObjects("Activity: ", largeText, BRIGHT_GREEN)   
         textRect.midright = (300, 450)
         textSurf_dist, textRect_dist = textObjects("Distance(km): ", largeText, ROYAL_BLUE)   
         textRect_dist.midright = (300, 500)
@@ -134,7 +240,7 @@ def newGoalPage():
         gameDisplay.blit(textSurf, textRect)
         gameDisplay.blit(textSurf_dist, textRect_dist)
         gameDisplay.blit(textSurf_time, textRect_time)
-       # button("Menu", 50, 400, 100, 75, 20, GREEN, BRIGHT_GREEN, menu )
+
         pg.display.update()
         MAINMENU = Button(image=None, pos=(500, 375), 
                             text_input="MAIN MENU", font=largeText, base_color=BROWN, hovering_color=BROWN_PINK)
@@ -203,7 +309,7 @@ def newGoalPage():
                         distance_text = ""
                     elif event.key == pg.K_BACKSPACE:
                         distance_text = distance_text[:-1]
-                    else:
+                    elif event.unicode.isdigit():
                         distance_text += event.unicode
                     text_surface = largeText.render(distance_text, True, BLACK)
                 if active_t:
@@ -212,7 +318,7 @@ def newGoalPage():
                         time_text = ""
                     elif event.key == pg.K_BACKSPACE:
                         time_text = time_text[:-1]
-                    else:
+                    elif event.unicode.isdigit():
                         time_text += event.unicode
                     text_surface = largeText.render(time_text, True, BLACK)
         pg.draw.rect(gameDisplay, BLACK, input_rect_a, 2)
@@ -276,8 +382,11 @@ def displayTimeScroll(d):
         gameDisplay.blit(scroll_sprite_small, (scroll_x, scroll_y))
 
         textSurf, textRect = textObjects("Date: " + str(d.date()), scrollText, BLACK)   
+        textSurf, textRect = textObjects("Date: " + str(d.date()), largeText, BLACK)   
         textRect.center = (scroll_x + scroll_w/2, scroll_y + scroll_h/2)
         gameDisplay.blit(textSurf, textRect)
+
+        
 
 def menu():
     d = datetime(2023, 9, 1)
@@ -288,6 +397,23 @@ def menu():
     image = pg.image.load("assets/background.jpeg").convert()
     # Create scrollbar object 
     scrollbar = taskPanel.TaskPanel(image.get_height())
+    rect_objects = []
+    for i in range(20):
+        rect = pg.Rect(50, 50 + i * 30, DISPLAY_WIDTH * 0.75, 20)
+        colour = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
+        rect_objects.append((rect, colour))
+    text_Objects = []
+    for i in range(20):
+        largeText = pg.font.SysFont('garamond', 20)
+        textSurf, textRect = textObjects("Goal!", largeText, BLACK)  
+        textRect.x = 50
+        textRect.y = scrollbar.y_axis + i * 30
+        textRect.width = DISPLAY_WIDTH * 0.75
+        textRect.height = 20 
+        text_Objects.append([textSurf, textRect, textRect.y])
+
+
+    pg.display.flip()
 
     while gameRun:
         PLAY_MOUSE_POS = pg.mouse.get_pos()
@@ -301,7 +427,6 @@ def menu():
                 goals[i].dayPassed()
 
         gameDisplay.fill(BEIGE)
-
 
         # displayProfile()
 
@@ -341,7 +466,11 @@ def menu():
 
         # --- Drawing code should go here
         taskSurface.blit(image,(0,scrollbar.y_axis))
-        scrollbar.draw(taskSurface)
+        for text in text_Objects:
+            #taskSurface.blit(pg.Surface((rect[0].w, rect[0].h)), (0, scrollbar.y_axis + rect[0].y))
+            text[1].y = scrollbar.y_axis + text[2]
+            taskSurface.blit(text[0], text[1])
+            scrollbar.draw(taskSurface)
         gameDisplay.blit(taskSurface, [(DISPLAY_WIDTH - taskWidth)//2, DISPLAY_HEIGHT * 0.5])
         
         
