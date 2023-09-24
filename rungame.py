@@ -280,6 +280,10 @@ def menu():
         if (datetime.now() - start_time).total_seconds() > 5:
             start_time = datetime.now()
             d += timedelta(days=1)
+            
+            # Decrement the days left for each of the goals
+            for i in range(len(goals)):
+                goals[i].dayPassed()
 
         gameDisplay.fill(BEIGE)
 
