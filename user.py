@@ -15,9 +15,9 @@ class User():
         self.stamina = int(user_dict["stamina"])
         self.goals = []
         for i in range(len(user_dict['goals'])):
-            self.goals.append(task.Task(user_dict['goals'][i]["activityName"], 
-                                        int(user_dict['goals'][i]["countdown"]), 
-                                        int(user_dict['goals'][i]["length"])))
+            self.goals.append(task.Task(user_dict['goals'][i]["activity"], 
+                                        int(user_dict['goals'][i]["time"]),
+                                        int(user_dict['goals'][i]["distance"])))
     def jsonable(self):
         return self.__dict__
 
