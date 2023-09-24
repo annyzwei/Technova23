@@ -8,7 +8,8 @@ import sys
 import random
 import math
 import numpy as np
-
+import json
+from user import User
 
 pg.init()
 
@@ -55,7 +56,6 @@ gameDisplay = pg.display.set_mode((DISPLAY_WIDTH, DISPLAY_HEIGHT))
 pg.display.set_caption("A Dragon's Guide to Power")
 clock = pg.time.Clock()
 
-goals = []
 gameRun = True
 newGoalRun = True
 
@@ -74,9 +74,24 @@ speed = 6
 mana = 10
 stamina = 5
 
+exp = 0
+
+#creating the character:
+
+
+
 #exp needed for breaking through each level
 level_exp_needed = [0, 10, 20, 40, 60, 80, 100, 120, 160, 200, 250]
 level_exp_needed_sum = [0, 10, 30, 70, 130, 210, 310, 430, 590, 790, 1040]
+
+# Reading past records
+f = open('user_data.json', 'r')
+userData = json.load(f) #userData is dict
+f.close()
+user = User(userData)
+
+print(user)
+
 
 for _ in range(15):  
     x = random.randint(0, DISPLAY_WIDTH * 2)
@@ -96,6 +111,21 @@ def textObjects(text, font, colour):
     #returns text + rectangle
     return textSurface, textSurface.get_rect()
 
+def ComplexHandler(Obj):
+    if hasattr(Obj, 'jsonable'):
+        return Obj.jsonable()
+    else:
+        raise TypeError
+
+def saveToFile(user):
+
+    
+    print(json.dumps(user, default=ComplexHandler))
+
+    json_user = json.dumps(user, default=ComplexHandler)
+    print(type(json_user))
+    with open("user_data.json", "w", encoding="utf-8") as outfile:
+        json.dump(json.loads(json_user), outfile, ensure_ascii=False)
 
 # calculating the pentagon stuff-------------------
 
@@ -149,6 +179,7 @@ def draw_skills_chart():
 #--------------------
 
 
+
 def draw_portrait(x, y):
     portrait_w = 200
     portrait_h = 200
@@ -187,6 +218,7 @@ def skillsPage():
 
         for event in pg.event.get():
             if event.type == pg.QUIT:
+                saveToFile(user)
                 pg.quit()
                 sys.exit()
             if event.type == pg.MOUSEBUTTONDOWN:
@@ -242,6 +274,7 @@ def newGoalPage():
         
         for event in pg.event.get():
             if event.type == pg.QUIT:
+                saveToFile(user)
                 pg.quit()
                 sys.exit()
             elif event.type == pg.MOUSEBUTTONDOWN:
@@ -249,8 +282,8 @@ def newGoalPage():
                     menu()
                 elif SUBMIT.checkForInput(PLAY_MOUSE_POS):
                     # Create goal and head back to the main menu
-                    goals.append(task.Task(activity_text, time_text, distance_text))
-                    print(goals[0].activity)
+                    user.goals.append(task.Task(activity_text, time_text, distance_text))
+                    print(user.goals[0].activity)
                     menu()
                     
                 active_a = False
@@ -376,8 +409,8 @@ def menu():
             d += timedelta(days=1)
             
             # Decrement the days left for each of the goals
-            for i in range(len(goals)):
-                goals[i].dayPassed()
+            for i in range(len(user.goals)):
+                user.goals[i].dayPassed()
 
         gameDisplay.fill(BEIGE)
 
@@ -403,6 +436,7 @@ def menu():
 
         for event in pg.event.get():
             if event.type == pg.QUIT:
+                saveToFile(user)
                 pg.quit()
                 sys.exit()
             if event.type == pg.MOUSEBUTTONDOWN:

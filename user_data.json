@@ -1,0 +1,1 @@
+{"exp": 27, "strength": 6, "speed": 3, "health": 8, "mana": 6, "stamina": 6, "goals": [{"activity": "test1", "completed": false, "finishedInTime": false, "time": 5, "distance": 3}, {"activity": "test1", "completed": false, "finishedInTime": false, "time": 5, "distance": 3}, {"activity": "fdsf", "completed": false, "finishedInTime": false, "time": "532", "distance": "234"}]}

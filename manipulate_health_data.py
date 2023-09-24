@@ -58,7 +58,8 @@ for entry in workout_data[1:]:
 wrkout_collection.pop(1)
 
 
-index = 1
+
+pprint(wrkout_collection)
 
 day = 0
 while False:

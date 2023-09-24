@@ -30,6 +30,8 @@ class Task():
         if self.time > 0:
             self.finishedInTime = True
            
+    def jsonable(self):
+        return self.__dict__
     
 
 # Our app suggested ones (suggest 1 per day)
