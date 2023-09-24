@@ -2,7 +2,7 @@ import pygame as pg
 from button import Button
 from datetime import datetime, timedelta
 from manipulate_health_data import wrkout_collection
-import taskPanel, scrollTest, task
+import taskPanel, task
 from attributes import appConsts
 import sys
 import random
@@ -280,6 +280,10 @@ def menu():
         if (datetime.now() - start_time).total_seconds() > 5:
             start_time = datetime.now()
             d += timedelta(days=1)
+            
+            # Decrement the days left for each of the goals
+            for i in range(len(goals)):
+                goals[i].dayPassed()
 
         gameDisplay.fill(BEIGE)
 
