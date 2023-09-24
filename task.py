@@ -12,8 +12,8 @@ class Task():
         #self.description = describe
         self.completed = False
         self.finishedInTime = False
-        self.time = countdown
-        self.distance = length
+        self.time = int(countdown)
+        self.distance = int(length)
         
     def dayPassed(self):
         if self.time > 0:
