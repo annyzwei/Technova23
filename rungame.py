@@ -530,7 +530,7 @@ def menu():
                 day = int(day_s)
                 workout_date = datetime(year, month, day)
                 if d == workout_date:
-                    for goal in goals:
+                    for goal in user.goals:
                         if goal.completed == False:
                             if workout[4] >= goal.distance:
                                 goal.completeTask()
