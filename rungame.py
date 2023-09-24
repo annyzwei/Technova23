@@ -375,9 +375,9 @@ def newGoalPage():
     tree_pos = []
     cloud_pos = []
     for i in range (7):
-        tree_pos.append((random.randint(20, DISPLAY_WIDTH-20), DISPLAY_HEIGHT-200 ))
+        tree_pos.append((random.randint(100, DISPLAY_WIDTH-100), DISPLAY_HEIGHT-200 ))
     for i in range (3):
-        cloud_pos.append((random.randint(20, DISPLAY_WIDTH-20), 50 + random.randint(0, 40)))
+        cloud_pos.append((random.randint(70, DISPLAY_WIDTH-70), 50 + random.randint(0, 40)))
 
     gameDisplay.fill(LIGHT_BLUE)
     
