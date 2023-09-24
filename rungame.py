@@ -7,6 +7,8 @@ from attributes import appConsts
 import sys
 import random
 import math
+import matplotlib.pyplot as plt
+import io
 import numpy as np
 import json
 from user import User
@@ -209,6 +211,28 @@ def draw_portrait(x, y):
     dragon_portrait_small = pg.transform.scale(dragon_portrait, (portrait_w, portrait_h))
     gameDisplay.blit(dragon_portrait_small, (new_x, y))
 
+data_x = []
+data_y = []
+for workout in wrkout_collection[1:]:
+    data_x.append(workout[0])
+    data_y.append(workout[1])
+
+
+def generate_plt(data_x, data_y):
+    plt.plot(data_x, data_y)
+    plt.xlabel('Date')
+    plt.ylabel('Step Count')
+    plt.xticks(rotation=45, ha='right')
+
+    plot_image = io.BytesIO()
+    plt.savefig(plot_image, format='png')
+    plot_image.seek(0)
+
+    plot_i = pg.transform.scale(pg.image.load(plot_image), (700, 275))
+
+    gameDisplay.blit(plot_i, (DISPLAY_WIDTH//5-100, 640))
+    plt.close()
+    plot_image.close()
 
 
 def skillsPage():
@@ -235,7 +259,7 @@ def skillsPage():
         MAINMENU.update(gameDisplay)
 
         draw_skills_chart()
-
+        generate_plt(data_x, data_y)
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 saveToFile(user)
@@ -244,6 +268,9 @@ def skillsPage():
             if event.type == pg.MOUSEBUTTONDOWN:
                 if MAINMENU.checkForInput(PLAY_MOUSE_POS):
                     menu()
+        # Clean up resources
+
+
         pg.display.update()
         clock.tick(60)
 
@@ -562,6 +589,8 @@ def menu():
         
         
         pg.display.flip()
+        
+
         clock.tick(60)
 
 

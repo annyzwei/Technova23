@@ -1,9 +1,11 @@
+import numpy as np
+
 
 """Creates a task object. To create an object: import task, and call task.Task("activity", "occurrence", "describe")
 where occurrence is either "daily" or "weekly" (other gives time = 0)
     """
 class Task():
-    def __init__(self, activityName, countdown, length): #, describe: str = ""):
+    def __init__(self, activityName: str = "", countdown: int = 1, length: int = 1): #, describe: str = ""):
         # Task/Ticket Properties
         # Tasks include: Activity Name, Description, Days until completion, Completed(boolean)
         self.activity = activityName
@@ -28,8 +30,6 @@ class Task():
         if self.time > 0:
             self.finishedInTime = True
            
-    def jsonable(self):
-        return self.__dict__
     
 
 # Our app suggested ones (suggest 1 per day)
