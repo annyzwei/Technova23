@@ -230,7 +230,7 @@ def generate_plt(data_x, data_y):
 
     plot_i = pg.transform.scale(pg.image.load(plot_image), (700, 275))
 
-    gameDisplay.blit(plot_i, (DISPLAY_WIDTH//5-100, 640))
+    gameDisplay.blit(plot_i, (DISPLAY_WIDTH//5-100, 540))
     plt.close()
     plot_image.close()
 
