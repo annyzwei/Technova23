@@ -134,6 +134,7 @@ def draw_cloud(x, y):
 
 def dragonAnimation():
     pg.draw.rect(gameDisplay, LIGHT_BLUE, [0, 0, DISPLAY_WIDTH, DRAGON_ANIMATION_HEIGHT])
+    pg.draw.rect(gameDisplay, TREE_GREEN, [0, DRAGON_ANIMATION_HEIGHT, DISPLAY_WIDTH, 10])
     for i in range(len(trees)):
             x, y = trees[i]
             draw_tree(x, y)
@@ -151,7 +152,7 @@ def dragonAnimation():
         x -= cloud_speed
         clouds[i] = (x, y)
 
-        # Reset tree's position when it goes off the screen
+        # Reset clouds's position when it goes off the screen
         if x + cloud_width < 0:
             x = DISPLAY_HEIGHT + random.randint(50, 200)
             clouds[i] = (x, y) 
@@ -194,6 +195,7 @@ def menu():
        # displayProfile()
 
       #  displayMissions()
+
         SKILLS = Button(image=None, pos=(200, 460), 
                             text_input="SKILLZ", font=largeText, base_color=GREEN, hovering_color=BRIGHT_GREEN)
 
