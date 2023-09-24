@@ -84,8 +84,10 @@ clouds = []
 largeText = pg.font.SysFont('garamond', 20)
 
 #skills page
-PENTAGON_X = DISPLAY_WIDTH // 2
-PENTAGON_Y = DISPLAY_HEIGHT // 2
+PENTAGON_X = DISPLAY_WIDTH // 4
+PENTAGON_Y = DISPLAY_HEIGHT / 2.5
+PENTAGON_RADIUS = 100
+
 
 # Skill levels (values between 0 and 10)
 strength = 8
@@ -158,9 +160,10 @@ def calculate_vertex_coords(radius, angle_degrees):
 
 # Function to draw the pentagon
 def draw_pentagon():
-    outer_radius = 150
+    outer_radius = 5*(PENTAGON_RADIUS/6)
+
     for line in range (6): #inner lines
-        radius = line*(outer_radius/5)
+        radius = line*(outer_radius//5)
         step = 360 / 5
 
         for i in range(5):
@@ -169,31 +172,37 @@ def draw_pentagon():
             end_point = calculate_vertex_coords(radius, angle_degrees + step)
             pg.draw.line(gameDisplay, GRAY, start_point, end_point, 2)
 
+
 # Function to draw grid lines inside the pentagon
 def draw_grid_lines():
     step = 360 / 5
-    radius = 150
+    radius = 5*(PENTAGON_RADIUS/6)
 
+    points = []
     for i in range(5):
         angle_degrees = step * i
         end_point = calculate_vertex_coords(radius, angle_degrees)
+        points.append(end_point)
         pg.draw.line(gameDisplay, GRAY, (PENTAGON_X, PENTAGON_Y), end_point, 2)
+    return points
 
 def draw_skills_chart():
-    draw_pentagon()
-    draw_grid_lines()
-    radius = 150
+
+    radius = PENTAGON_RADIUS
     step = 360 / 5
 
     points = [
-        calculate_vertex_coords(radius * (strength / 10), step * 0),
-        calculate_vertex_coords(radius * (health / 10), step * 1),
-        calculate_vertex_coords(radius * (speed / 10), step * 2),
-        calculate_vertex_coords(radius * (mana / 10), step * 3),
-        calculate_vertex_coords(radius * (stamina / 10), step * 4),
+        calculate_vertex_coords(radius * (user.strength / 10), step * 0),
+        calculate_vertex_coords(radius * (user.health / 10), step * 1),
+        calculate_vertex_coords(radius * (user.speed / 10), step * 2),
+        calculate_vertex_coords(radius * (user.mana / 10), step * 3),
+        calculate_vertex_coords(radius * (user.stamina / 10), step * 4),
     ]
+    pg.draw.polygon(gameDisplay, BLUE, points)
+    draw_pentagon()
+    return draw_grid_lines()
 
-    pg.draw.polygon(gameDisplay, BLUE, points, 2)
+
 
 
 #--------------------
@@ -201,8 +210,8 @@ def draw_skills_chart():
 
 
 def draw_portrait(x, y):
-    portrait_w = 200
-    portrait_h = 200
+    portrait_w = 150
+    portrait_h = 150
 
     new_x = x - portrait_w/2
     
@@ -212,11 +221,27 @@ def draw_portrait(x, y):
     gameDisplay.blit(dragon_portrait_small, (new_x, y))
 
 data_x = []
-data_y = []
 for workout in wrkout_collection[1:]:
     data_x.append(workout[0])
-    data_y.append(workout[1])
 
+def getColumn_1(s):
+    index = 0
+    if s == "Strength":
+        index = 1
+    elif s == "Health":
+        index = 2
+    elif s == "Speed":
+        index = 3
+    elif s == "Mana":
+        index = 4
+    elif s == "Stamina":
+        index = 5
+
+    data_y = []
+    for workout in wrkout_collection[1:]:
+        data_y.append(workout[index])
+
+    return data_y
 
 def generate_plt(data_x, data_y):
     plt.plot(data_x, data_y)
@@ -230,19 +255,27 @@ def generate_plt(data_x, data_y):
 
     plot_i = pg.transform.scale(pg.image.load(plot_image), (700, 275))
 
-    gameDisplay.blit(plot_i, (DISPLAY_WIDTH//5-100, 540))
+    # textSurf, textRect = textObjects(s, largeText, BLACK)   
+    # textRect.x = 50
+    # textRect.y = count * 30
+    # textRect.width = DISPLAY_WIDTH * 0.75
+    # textRect.height = 30
+    # gameDisplay.blit(textSurf, textRect)
+    
+    gameDisplay.blit(plot_i, (DISPLAY_WIDTH//5-100, DISPLAY_HEIGHT//2))
     plt.close()
     plot_image.close()
 
 
 def skillsPage():
     gameDisplay.fill(WHITE)
+    data_y = getColumn_1("Strength")
     while True:
         PLAY_MOUSE_POS = pg.mouse.get_pos()
         textSurf, textRect = textObjects("HIGHSCORE: ", largeText, INDIGO)   
         textRect.center = (400, 300)
 
-        draw_portrait(DISPLAY_WIDTH//4, 50)
+        draw_portrait(DISPLAY_WIDTH//4, 30)
         textSurf, textRect = textObjects("Joe", vvlargeText, BRIGHT_GREEN)   
         textRect.midright = (3*(DISPLAY_WIDTH//5), 70)
         
@@ -252,14 +285,48 @@ def skillsPage():
         
         
 
-        MAINMENU = Button(image=None, pos=(640, 460), 
+        MAINMENU = Button(image=None, pos=(DISPLAY_WIDTH*3.4/5, DISPLAY_HEIGHT//4.5), 
                             text_input="MAIN MENU", font=largeText, base_color=BROWN, hovering_color=BROWN_PINK)
 
         MAINMENU.changeColor(PLAY_MOUSE_POS)
         MAINMENU.update(gameDisplay)
-
-        draw_skills_chart()
+        points = draw_skills_chart()
         generate_plt(data_x, data_y)
+        
+
+        STRENGTH = Button(image=None, pos=(points[0][0], points[0][1]), 
+                        text_input="Strength", font=largeText, base_color=BROWN, hovering_color=BROWN_PINK)
+        STRENGTH.changeColor(PLAY_MOUSE_POS)
+        STRENGTH.update(gameDisplay)
+
+        HEALTH = Button(image=None, pos=(points[1][0], points[1][1] ), 
+                        text_input="Health", font=largeText, base_color=BROWN, hovering_color=BROWN_PINK)
+        HEALTH.changeColor(PLAY_MOUSE_POS)
+        HEALTH.update(gameDisplay)
+
+        SPEED = Button(image=None, pos=(points[2][0] , points[2][1] ), 
+                        text_input="Speed", font=largeText, base_color=BROWN, hovering_color=BROWN_PINK)
+        SPEED.changeColor(PLAY_MOUSE_POS)
+        SPEED.update(gameDisplay)
+
+        MANA = Button(image=None, pos=(points[3][0] , points[3][1]), 
+                        text_input="Mana", font=largeText, base_color=BROWN, hovering_color=BROWN_PINK)
+        MANA.changeColor(PLAY_MOUSE_POS)
+        MANA.update(gameDisplay)
+
+        STAMINA = Button(image=None, pos=(points[4][0], points[4][1]), 
+                        text_input="Stamina", font=largeText, base_color=BROWN, hovering_color=BROWN_PINK)
+        STAMINA.changeColor(PLAY_MOUSE_POS)
+        STAMINA.update(gameDisplay)
+        
+        scroll_w = DISPLAY_WIDTH//2.5
+        scroll_h = DISPLAY_HEIGHT//3
+        scroll_x = DISPLAY_WIDTH*2.4//5
+        scroll_y = DISPLAY_HEIGHT//4.5
+
+        scroll_sprite_medium = pg.transform.scale(scroll_sprite, (scroll_w, scroll_h))
+        gameDisplay.blit(scroll_sprite_medium, (scroll_x, scroll_y))
+
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 saveToFile(user)
@@ -268,6 +335,26 @@ def skillsPage():
             if event.type == pg.MOUSEBUTTONDOWN:
                 if MAINMENU.checkForInput(PLAY_MOUSE_POS):
                     menu()
+                elif STRENGTH.checkForInput(PLAY_MOUSE_POS):
+                    data_y = getColumn_1("Strength")
+                    points = draw_skills_chart()
+                    generate_plt(data_x, data_y)
+                elif HEALTH.checkForInput(PLAY_MOUSE_POS):
+                    data_y = getColumn_1("Health")
+                    points = draw_skills_chart()
+                    generate_plt(data_x, data_y)
+                elif SPEED.checkForInput(PLAY_MOUSE_POS):
+                    data_y = getColumn_1("Speed")
+                    points = draw_skills_chart()
+                    generate_plt(data_x, data_y)
+                elif MANA.checkForInput(PLAY_MOUSE_POS):
+                    data_y = getColumn_1("Mana")
+                    points = draw_skills_chart()
+                    generate_plt(data_x, data_y)
+                elif STAMINA.checkForInput(PLAY_MOUSE_POS):
+                    data_y = getColumn_1("Stamina")
+                    points = draw_skills_chart()
+                    generate_plt(data_x, data_y)
         # Clean up resources
 
 
@@ -288,9 +375,9 @@ def newGoalPage():
     tree_pos = []
     cloud_pos = []
     for i in range (7):
-        tree_pos.append((random.randint(20, DISPLAY_WIDTH-20), DISPLAY_HEIGHT-200 ))
+        tree_pos.append((random.randint(100, DISPLAY_WIDTH-100), DISPLAY_HEIGHT-200 ))
     for i in range (3):
-        cloud_pos.append((random.randint(20, DISPLAY_WIDTH-20), 50 + random.randint(0, 40)))
+        cloud_pos.append((random.randint(70, DISPLAY_WIDTH-70), 50 + random.randint(0, 40)))
 
     gameDisplay.fill(LIGHT_BLUE)
     
@@ -483,7 +570,6 @@ def menu():
         goal = task.Task("running" + str(i), i, 30 - i)
         user.goals.append(goal)
     for goal in user.goals:
-        largeText = pg.font.SysFont('garamond', 20)
         textSurf, textRect = textObjects("Goal: " + goal.activity + ", distance: " + str(goal.distance) + " km, in " + str(goal.time) + " days", largeText, BLACK)  
         textRect.x = 50
         textRect.y = count * 30
