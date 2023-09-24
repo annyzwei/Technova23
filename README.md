@@ -86,6 +86,12 @@ Encouraging physical activity and a balanced lifestyle by analyzing trends from 
 
 
 
+![image](https://github.com/annyzwei/Technova23/assets/86426844/7922768e-d476-4ec5-a70c-f55d52e7d02b)
+
+Train Your Dragon :)
+![image](https://github.com/annyzwei/Technova23/assets/86426844/70dd3463-5822-42ea-adda-7130be627858)
+
+
 
 
 
