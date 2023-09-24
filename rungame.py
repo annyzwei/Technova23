@@ -14,14 +14,30 @@ pg.init()
 
 DISPLAY_WIDTH = appConsts.DISPLAY_WIDTH
 DISPLAY_HEIGHT = appConsts.DISPLAY_HEIGHT
+
+# Design
+largeText = pg.font.Font('freesansbold.ttf', 20)
+scrollText = pg.font.SysFont('garamond', 20)
+        
 BLACK = (0, 0, 0)
 GREEN = (0,200,0)
 BRIGHT_GREEN = (0,255,0)
 LIGHT_BLUE = (202, 239, 250)
+
+ROYAL_BLUE = (36, 100, 201)
+PERIWINKLE = (204, 204, 255)
+INDIGO = (83, 83, 237)
+LIGHT_PINK = (209, 167, 197)
+BROWN_PINK = (153, 98, 128)
+BROWN = (56, 34, 18)
+WHITE = (255, 255, 255)
+BEIGE = (250, 241, 225)
+RED = (250, 0, 0)
 BLUE = (140, 170, 250)
 WHITE = (255, 255, 255)
 BEIGE = (250, 241, 225)
 GRAY = (200, 200, 200)
+
 
 vvlargeText = pg.font.SysFont('garamond', 60)
 largeText = pg.font.SysFont('garamond', 20)
@@ -166,6 +182,8 @@ def skillsPage():
     gameDisplay.fill(WHITE)
     while True:
         PLAY_MOUSE_POS = pg.mouse.get_pos()
+        textSurf, textRect = textObjects("HIGHSCORE: ", largeText, INDIGO)   
+        textRect.center = (400, 300)
 
         draw_portrait(DISPLAY_WIDTH//4, 50)
         textSurf, textRect = textObjects("Joe", vvlargeText, BRIGHT_GREEN)   
@@ -178,7 +196,7 @@ def skillsPage():
         
 
         MAINMENU = Button(image=None, pos=(640, 460), 
-                            text_input="MAIN MENU", font=largeText, base_color=GREEN, hovering_color=BRIGHT_GREEN)
+                            text_input="MAIN MENU", font=largeText, base_color=BROWN, hovering_color=BROWN_PINK)
 
         MAINMENU.changeColor(PLAY_MOUSE_POS)
         MAINMENU.update(gameDisplay)
@@ -208,19 +226,22 @@ def newGoalPage():
     time_text = ""
     while True:
         PLAY_MOUSE_POS = pg.mouse.get_pos()
+        textSurf, textRect = textObjects("Activity: ", largeText, ROYAL_BLUE)   
         textSurf, textRect = textObjects("Activity: ", largeText, BRIGHT_GREEN)   
         textRect.midright = (300, 450)
-        textSurf_dist, textRect_dist = textObjects("Distance(km): ", largeText, BRIGHT_GREEN)   
+        textSurf_dist, textRect_dist = textObjects("Distance(km): ", largeText, ROYAL_BLUE)   
         textRect_dist.midright = (300, 500)
-        textSurf_time, textRect_time = textObjects("Number of Days to Complete it: ", largeText, BRIGHT_GREEN)   
+        textSurf_time, textRect_time = textObjects("Number of Days to Complete: ", largeText, ROYAL_BLUE)   
         textRect_time.midright = (300, 550)
+        textSurf_error, textRect_error = textObjects("ERROR: Sections Not Filled Correctly ", largeText, RED)   
+        textRect_error.midright = (410, 600)
         gameDisplay.blit(textSurf, textRect)
         gameDisplay.blit(textSurf_dist, textRect_dist)
         gameDisplay.blit(textSurf_time, textRect_time)
 
         pg.display.update()
         MAINMENU = Button(image=None, pos=(500, 375), 
-                            text_input="MAIN MENU", font=largeText, base_color=GREEN, hovering_color=BRIGHT_GREEN)
+                            text_input="MAIN MENU", font=largeText, base_color=BROWN, hovering_color=BROWN_PINK)
 
         MAINMENU.changeColor(PLAY_MOUSE_POS)
         MAINMENU.update(gameDisplay)
@@ -248,11 +269,15 @@ def newGoalPage():
                 if MAINMENU.checkForInput(PLAY_MOUSE_POS):
                     menu()
                 elif SUBMIT.checkForInput(PLAY_MOUSE_POS):
-                    # Create goal and head back to the main menu
-                    goals.append(task.Task(activity_text, time_text, distance_text))
-                    print(goals[0].activity)
-                    menu()
-                    
+                    if (len(activity_text) != 0) and isinstance(time_text, int) and isinstance(distance_text, int):
+                        # Create goal and head back to the main menu
+                        goals.append(task.Task(activity_text, time_text, distance_text))
+                        print(goals[0].activity)
+                        menu()
+                    else:
+                        gameDisplay.blit(textSurf_error, textRect_error)
+                        pg.display.update()
+                        
                 active_a = False
                 active_d = False
                 active_t = False
@@ -354,6 +379,7 @@ def displayTimeScroll(d):
         scroll_sprite_small = pg.transform.scale(scroll_sprite, (scroll_w, scroll_h))
         gameDisplay.blit(scroll_sprite_small, (scroll_x, scroll_y))
 
+        textSurf, textRect = textObjects("Date: " + str(d.date()), scrollText, BLACK)   
         textSurf, textRect = textObjects("Date: " + str(d.date()), largeText, BLACK)   
         textRect.center = (scroll_x + scroll_w/2, scroll_y + scroll_h/2)
         gameDisplay.blit(textSurf, textRect)
@@ -386,14 +412,14 @@ def menu():
         # displayMissions()
 
         SKILLS = Button(image=None, pos=(200, 460), 
-                            text_input="SKILLZ", font=largeText, base_color=GREEN, hovering_color=BRIGHT_GREEN)
+                            text_input="SKILLZ", font=scrollText, base_color=INDIGO, hovering_color=LIGHT_PINK)
 
         SKILLS.changeColor(PLAY_MOUSE_POS)
         SKILLS.update(gameDisplay)
 
               #  displayMissions()
         GOALS = Button(image=None, pos=(640, 460), 
-                            text_input="GOALS", font=largeText, base_color=GREEN, hovering_color=BRIGHT_GREEN)
+                            text_input="GOALS", font=scrollText, base_color=INDIGO, hovering_color=LIGHT_PINK)
 
         GOALS.changeColor(PLAY_MOUSE_POS)
         GOALS.update(gameDisplay)
