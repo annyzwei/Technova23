@@ -2,15 +2,16 @@ import pygame as pg
 from button import Button
 from datetime import datetime, timedelta
 from manipulate_health_data import wrkout_collection
-import time
+import taskPanel, scrollTest
+from attributes import appConsts
 import sys
 import random
 
 
 pg.init()
 
-DISPLAY_WIDTH = 800
-DISPLAY_HEIGHT = 1000
+DISPLAY_WIDTH = appConsts.DISPLAY_WIDTH
+DISPLAY_HEIGHT = appConsts.DISPLAY_HEIGHT
 BLACK = (0, 0, 0)
 GREEN = (0,200,0)
 BRIGHT_GREEN = (0,255,0)
@@ -20,7 +21,6 @@ BEIGE = (250, 241, 225)
 
 
 DRAGON_ANIMATION_HEIGHT = 300
-
 # Tree parameters
 tree_width = 30
 tree_height = 60
@@ -32,6 +32,12 @@ cloud_width = 130
 cloud_height = 40
 cloud_speed = 2
 
+# Subsurface for goals
+taskWidth = int(DISPLAY_WIDTH * 0.75)
+taskHeight = int(DISPLAY_HEIGHT * 0.3)
+
+taskSurface = pg.Surface([taskWidth, taskHeight])
+taskSurface.fill(LIGHT_BLUE)
 
 dragon_sprite = pg.image.load("assets/dragon.png")
 scroll_sprite = pg.image.load("assets/scroll.png")
@@ -249,6 +255,11 @@ def menu():
     d = datetime(2023, 9, 1)
     gameRun = True
     start_time = datetime.now()
+    
+    # Create scroll bar object
+    image = pg.image.load("assets/background.jpeg").convert()
+    # Create scrollbar object 
+    scrollbar = taskPanel.TaskPanel(image.get_height())
 
     while gameRun:
         PLAY_MOUSE_POS = pg.mouse.get_pos()
@@ -261,9 +272,9 @@ def menu():
 
         largeText = pg.font.SysFont('garamond', 20)
 
-       # displayProfile()
+        # displayProfile()
 
-      #  displayMissions()
+        # displayMissions()
 
         SKILLS = Button(image=None, pos=(200, 460), 
                             text_input="SKILLZ", font=largeText, base_color=GREEN, hovering_color=BRIGHT_GREEN)
@@ -277,12 +288,9 @@ def menu():
 
         GOALS.changeColor(PLAY_MOUSE_POS)
         GOALS.update(gameDisplay)
-
         dragonAnimation()
         displayTimeScroll(d)
-
-
-
+        
 
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -293,7 +301,21 @@ def menu():
                     skillsPage()
                 elif GOALS.checkForInput(PLAY_MOUSE_POS):
                     newGoalPage()
+                    
+            scrollbar.event_handler(event)
+            
+       
+         # --- Game logic should go here
+        scrollbar.update()
+
+        # --- Drawing code should go here
+        taskSurface.blit(image,(0,scrollbar.y_axis))
+        scrollbar.draw(taskSurface)
+        gameDisplay.blit(taskSurface, [(DISPLAY_WIDTH - taskWidth)//2, DISPLAY_HEIGHT * 0.5])
+        
+        
         pg.display.flip()
         clock.tick(60)
+
 
 menu()
