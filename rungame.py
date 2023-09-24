@@ -7,8 +7,11 @@ from attributes import appConsts
 import sys
 import random
 import math
+import matplotlib.pyplot as plt
+import io
 import numpy as np
-
+import json
+from user import User
 
 pg.init()
 
@@ -71,7 +74,6 @@ gameDisplay = pg.display.set_mode((DISPLAY_WIDTH, DISPLAY_HEIGHT))
 pg.display.set_caption("A Dragon's Guide to Power")
 clock = pg.time.Clock()
 
-goals = []
 gameRun = True
 newGoalRun = True
 
@@ -92,9 +94,24 @@ speed = 6
 mana = 10
 stamina = 5
 
+exp = 0
+
+#creating the character:
+
+
+
 #exp needed for breaking through each level
 level_exp_needed = [0, 10, 20, 40, 60, 80, 100, 120, 160, 200, 250]
 level_exp_needed_sum = [0, 10, 30, 70, 130, 210, 310, 430, 590, 790, 1040]
+
+# Reading past records
+f = open('user_data.json', 'r')
+userData = json.load(f) #userData is dict
+f.close()
+user = User(userData)
+
+print(user)
+
 
 for _ in range(15):  
     x = random.randint(0, DISPLAY_WIDTH * 2)
@@ -114,6 +131,21 @@ def textObjects(text, font, colour):
     #returns text + rectangle
     return textSurface, textSurface.get_rect()
 
+def ComplexHandler(Obj):
+    if hasattr(Obj, 'jsonable'):
+        return Obj.jsonable()
+    else:
+        raise TypeError
+
+def saveToFile(user):
+
+    
+    print(json.dumps(user, default=ComplexHandler))
+
+    json_user = json.dumps(user, default=ComplexHandler)
+    print(type(json_user))
+    with open("user_data.json", "w", encoding="utf-8") as outfile:
+        json.dump(json.loads(json_user), outfile, ensure_ascii=False)
 
 # calculating the pentagon stuff-------------------
 
@@ -167,6 +199,7 @@ def draw_skills_chart():
 #--------------------
 
 
+
 def draw_portrait(x, y):
     portrait_w = 200
     portrait_h = 200
@@ -178,6 +211,28 @@ def draw_portrait(x, y):
     dragon_portrait_small = pg.transform.scale(dragon_portrait, (portrait_w, portrait_h))
     gameDisplay.blit(dragon_portrait_small, (new_x, y))
 
+data_x = []
+data_y = []
+for workout in wrkout_collection[1:]:
+    data_x.append(workout[0])
+    data_y.append(workout[1])
+
+
+def generate_plt(data_x, data_y):
+    plt.plot(data_x, data_y)
+    plt.xlabel('Date')
+    plt.ylabel('Step Count')
+    plt.xticks(rotation=45, ha='right')
+
+    plot_image = io.BytesIO()
+    plt.savefig(plot_image, format='png')
+    plot_image.seek(0)
+
+    plot_i = pg.transform.scale(pg.image.load(plot_image), (700, 275))
+
+    gameDisplay.blit(plot_i, (DISPLAY_WIDTH//5-100, 640))
+    plt.close()
+    plot_image.close()
 
 
 def skillsPage():
@@ -204,19 +259,22 @@ def skillsPage():
         MAINMENU.update(gameDisplay)
 
         draw_skills_chart()
-
+        generate_plt(data_x, data_y)
         for event in pg.event.get():
             if event.type == pg.QUIT:
+                saveToFile(user)
                 pg.quit()
                 sys.exit()
             if event.type == pg.MOUSEBUTTONDOWN:
                 if MAINMENU.checkForInput(PLAY_MOUSE_POS):
                     menu()
+        # Clean up resources
+
+
         pg.display.update()
         clock.tick(60)
 
 def newGoalPage():
-    gameDisplay.fill(WHITE)
     # a: activity type
     # d: distance
     # c: time frame
@@ -226,22 +284,36 @@ def newGoalPage():
     activity_text = ""
     distance_text = ""
     time_text = ""
+
+    tree_pos = []
+    cloud_pos = []
+    for i in range (7):
+        tree_pos.append((random.randint(20, DISPLAY_WIDTH-20), DISPLAY_HEIGHT-200 ))
+    for i in range (3):
+        cloud_pos.append((random.randint(20, DISPLAY_WIDTH-20), 50 + random.randint(0, 40)))
+
+    gameDisplay.fill(LIGHT_BLUE)
+    
+    show_error = False
     while True:
+        pg.draw.rect(gameDisplay, TREE_GREEN, [0, DISPLAY_HEIGHT-200, DISPLAY_WIDTH, 200])
+        for i in tree_pos:
+            draw_tree(i[0], i[1])
+        for i in cloud_pos:
+            draw_cloud(i[0], i[1])
         PLAY_MOUSE_POS = pg.mouse.get_pos()
         textSurf, textRect = textObjects("Activity: ", largeText, ROYAL_BLUE)   
-        textSurf, textRect = textObjects("Activity: ", largeText, BRIGHT_GREEN)   
         textRect.midright = (300, 450)
         textSurf_dist, textRect_dist = textObjects("Distance(km): ", largeText, ROYAL_BLUE)   
         textRect_dist.midright = (300, 500)
         textSurf_time, textRect_time = textObjects("Number of Days to Complete: ", largeText, ROYAL_BLUE)   
         textRect_time.midright = (300, 550)
         textSurf_error, textRect_error = textObjects("ERROR: Sections Not Filled Correctly ", largeText, RED)   
-        textRect_error.midright = (410, 600)
+        textRect_error.midright = (410, 625)
         gameDisplay.blit(textSurf, textRect)
         gameDisplay.blit(textSurf_dist, textRect_dist)
         gameDisplay.blit(textSurf_time, textRect_time)
 
-        pg.display.update()
         MAINMENU = Button(image=None, pos=(500, 375), 
                             text_input="MAIN MENU", font=largeText, base_color=BROWN, hovering_color=BROWN_PINK)
 
@@ -249,7 +321,7 @@ def newGoalPage():
         MAINMENU.update(gameDisplay)
         
         SUBMIT = Button(image=None, pos=(500, 625), 
-                            text_input="SUBMIT", font=largeText, base_color=GREEN, hovering_color=BRIGHT_GREEN)
+                            text_input="SUBMIT", font=largeText, base_color=BROWN, hovering_color=BRIGHT_GREEN)
 
         SUBMIT.changeColor(PLAY_MOUSE_POS)
         SUBMIT.update(gameDisplay)
@@ -263,8 +335,14 @@ def newGoalPage():
         text_surface_t = largeText.render(time_text, True, BLACK)
         input_rect_t = pg.Rect(350, 530, 300, 40)
         
+        if (show_error):
+            gameDisplay.blit(textSurf_error, textRect_error)
+        
+        pg.display.update()
+        
         for event in pg.event.get():
             if event.type == pg.QUIT:
+                saveToFile(user)
                 pg.quit()
                 sys.exit()
             elif event.type == pg.MOUSEBUTTONDOWN:
@@ -273,12 +351,12 @@ def newGoalPage():
                 elif SUBMIT.checkForInput(PLAY_MOUSE_POS):
                     if (len(activity_text) != 0) and (len(time_text) != 0) and (len(distance_text) != 0):
                         # Create goal and head back to the main menu
-                        goals.append(task.Task(activity_text, time_text, distance_text))
-                        print(goals[0].activity)
+                        user.goals.append(task.Task(activity_text, time_text, distance_text))
+                        print(user.goals[0].activity)
+                        show_error = False
                         menu()
                     else:
-                        gameDisplay.blit(textSurf_error, textRect_error)
-                        pg.display.update()
+                        show_error = True
                         
                 active_a = False
                 active_d = False
@@ -292,7 +370,7 @@ def newGoalPage():
                     active_t = True
                 # text_surface = largeText.render(input_text, True, BLACK)
             elif event.type == pg.KEYDOWN:
-                gameDisplay.fill(WHITE)
+                gameDisplay.fill(LIGHT_BLUE)
                 pg.display.update([input_rect_a, input_rect_d, input_rect_t])
                 if active_a:
                     if event.key == pg.K_RETURN:
@@ -392,25 +470,27 @@ def menu():
     d = datetime(2023, 9, 1)
     gameRun = True
     start_time = datetime.now()
+    index = 1
     
     # Create scroll bar object
     image = pg.image.load("assets/background.jpeg").convert()
     # Create scrollbar object 
     scrollbar = taskPanel.TaskPanel(image.get_height())
-    rect_objects = []
-    for i in range(20):
-        rect = pg.Rect(50, 50 + i * 30, DISPLAY_WIDTH * 0.75, 20)
-        colour = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
-        rect_objects.append((rect, colour))
+
     text_Objects = []
-    for i in range(20):
+    count = 0
+    for i in range(30):
+        goal = task.Task("running" + str(i), i, 30 - i)
+        user.goals.append(goal)
+    for goal in user.goals:
         largeText = pg.font.SysFont('garamond', 20)
-        textSurf, textRect = textObjects("Goal!", largeText, BLACK)  
+        textSurf, textRect = textObjects("Goal: " + goal.activity + ", distance: " + str(goal.distance) + " km, in " + str(goal.time) + " days", largeText, BLACK)  
         textRect.x = 50
-        textRect.y = scrollbar.y_axis + i * 30
+        textRect.y = count * 30
         textRect.width = DISPLAY_WIDTH * 0.75
-        textRect.height = 20 
-        text_Objects.append([textSurf, textRect, textRect.y])
+        textRect.height = 30
+        text_Objects.append([textSurf, textRect, textRect.y, goal])
+        count+=1
 
 
     pg.display.flip()
@@ -423,8 +503,38 @@ def menu():
             d += timedelta(days=1)
             
             # Decrement the days left for each of the goals
-            for i in range(len(goals)):
-                goals[i].dayPassed()
+            for i in range(len(user.goals)):
+                user.goals[i].dayPassed() 
+
+            for workout in wrkout_collection[index:]:
+                year_s = workout[0][0:4]
+                month_s = workout[0][5:7]
+                day_s = workout[0][8:10]
+                year = int(year_s)
+                month = int(month_s)
+                day = int(day_s)
+                workout_date = datetime(year, month, day)
+                if d == workout_date:
+                    for goal in user.goals:
+                        if goal.completed == False:
+                            if workout[4] >= goal.distance:
+                                goal.completeTask()
+                index+=1
+
+            for workout in wrkout_collection[index:]:
+                year_s = workout[0][0:4]
+                month_s = workout[0][5:7]
+                day_s = workout[0][8:10]
+                year = int(year_s)
+                month = int(month_s)
+                day = int(day_s)
+                workout_date = datetime(year, month, day)
+                if d == workout_date:
+                    for goal in goals:
+                        if goal.completed == False:
+                            if workout[4] >= goal.distance:
+                                goal.completeTask()
+                index+=1
 
         gameDisplay.fill(BEIGE)
 
@@ -450,6 +560,7 @@ def menu():
 
         for event in pg.event.get():
             if event.type == pg.QUIT:
+                saveToFile(user)
                 pg.quit()
                 sys.exit()
             if event.type == pg.MOUSEBUTTONDOWN:
@@ -469,12 +580,22 @@ def menu():
         for text in text_Objects:
             #taskSurface.blit(pg.Surface((rect[0].w, rect[0].h)), (0, scrollbar.y_axis + rect[0].y))
             text[1].y = scrollbar.y_axis + text[2]
+            goal = text[3]
+            if goal.finishedInTime is True:
+                text[0] = largeText.render("Goal Completed!: " + goal.activity, True, BLACK)
+            elif goal.time == 0:
+                text[0] = largeText.render("Goal Not Completed :(", True, BLACK)
+            else:
+                text[0] = largeText.render("Goal: " + goal.activity + ", distance: " + str(goal.distance) + " km, in " + str(goal.time) + " days", True, BLACK)
             taskSurface.blit(text[0], text[1])
             scrollbar.draw(taskSurface)
-        gameDisplay.blit(taskSurface, [(DISPLAY_WIDTH - taskWidth)//2, DISPLAY_HEIGHT * 0.5])
+            #scrollbar.update()
+        gameDisplay.blit(taskSurface, [(DISPLAY_WIDTH - taskWidth)//2, DISPLAY_HEIGHT * 0.63])
         
         
         pg.display.flip()
+        
+
         clock.tick(60)
 
 
