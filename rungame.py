@@ -85,7 +85,7 @@ largeText = pg.font.SysFont('garamond', 20)
 
 #skills page
 PENTAGON_X = DISPLAY_WIDTH // 4
-PENTAGON_Y = 2*DISPLAY_HEIGHT // 5
+PENTAGON_Y = DISPLAY_HEIGHT / 2.5
 PENTAGON_RADIUS = 100
 
 
@@ -210,8 +210,8 @@ def draw_skills_chart():
 
 
 def draw_portrait(x, y):
-    portrait_w = 200
-    portrait_h = 200
+    portrait_w = 150
+    portrait_h = 150
 
     new_x = x - portrait_w/2
     
@@ -275,7 +275,7 @@ def skillsPage():
         textSurf, textRect = textObjects("HIGHSCORE: ", largeText, INDIGO)   
         textRect.center = (400, 300)
 
-        draw_portrait(DISPLAY_WIDTH//4, 50)
+        draw_portrait(DISPLAY_WIDTH//4, 30)
         textSurf, textRect = textObjects("Joe", vvlargeText, BRIGHT_GREEN)   
         textRect.midright = (3*(DISPLAY_WIDTH//5), 70)
         
