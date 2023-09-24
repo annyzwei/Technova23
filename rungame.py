@@ -436,8 +436,8 @@ def menu():
     count = 0
     for i in range(30):
         goal = task.Task("running" + str(i), i, 30 - i)
-        goals.append(goal)
-    for goal in goals:
+        user.goals.append(goal)
+    for goal in user.goals:
         largeText = pg.font.SysFont('garamond', 20)
         textSurf, textRect = textObjects("Goal: " + goal.activity + ", distance: " + str(goal.distance) + " km, in " + str(goal.time) + " days", largeText, BLACK)  
         textRect.x = 50
@@ -470,7 +470,7 @@ def menu():
                 day = int(day_s)
                 workout_date = datetime(year, month, day)
                 if d == workout_date:
-                    for goal in goals:
+                    for goal in user.goals:
                         if goal.completed == False:
                             if workout[4] >= goal.distance:
                                 goal.completeTask()
