@@ -271,7 +271,7 @@ def newGoalPage():
                 if MAINMENU.checkForInput(PLAY_MOUSE_POS):
                     menu()
                 elif SUBMIT.checkForInput(PLAY_MOUSE_POS):
-                    if (len(activity_text) != 0) and isinstance(time_text, int) and isinstance(distance_text, int):
+                    if (len(activity_text) != 0) and len(time_text) != 0 and len(distance_text) != 0:
                         # Create goal and head back to the main menu
                         goals.append(task.Task(activity_text, time_text, distance_text))
                         print(goals[0].activity)
@@ -392,25 +392,27 @@ def menu():
     d = datetime(2023, 9, 1)
     gameRun = True
     start_time = datetime.now()
+    index = 1
     
     # Create scroll bar object
     image = pg.image.load("assets/background.jpeg").convert()
     # Create scrollbar object 
     scrollbar = taskPanel.TaskPanel(image.get_height())
-    rect_objects = []
-    for i in range(20):
-        rect = pg.Rect(50, 50 + i * 30, DISPLAY_WIDTH * 0.75, 20)
-        colour = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
-        rect_objects.append((rect, colour))
+
     text_Objects = []
-    for i in range(20):
+    count = 0
+    for i in range(30):
+        goal = task.Task("running" + str(i), i, 30 - i)
+        goals.append(goal)
+    for goal in goals:
         largeText = pg.font.SysFont('garamond', 20)
-        textSurf, textRect = textObjects("Goal!", largeText, BLACK)  
+        textSurf, textRect = textObjects("Goal: " + goal.activity + ", distance: " + str(goal.distance) + " km, in " + str(goal.time) + " days", largeText, BLACK)  
         textRect.x = 50
-        textRect.y = scrollbar.y_axis + i * 30
+        textRect.y = count * 30
         textRect.width = DISPLAY_WIDTH * 0.75
-        textRect.height = 20 
-        text_Objects.append([textSurf, textRect, textRect.y])
+        textRect.height = 30
+        text_Objects.append([textSurf, textRect, textRect.y, goal])
+        count+=1
 
 
     pg.display.flip()
@@ -425,6 +427,21 @@ def menu():
             # Decrement the days left for each of the goals
             for i in range(len(goals)):
                 goals[i].dayPassed()
+
+            for workout in wrkout_collection[index:]:
+                year_s = workout[0][0:4]
+                month_s = workout[0][5:7]
+                day_s = workout[0][8:10]
+                year = int(year_s)
+                month = int(month_s)
+                day = int(day_s)
+                workout_date = datetime(year, month, day)
+                if d == workout_date:
+                    for goal in goals:
+                        if goal.completed == False:
+                            if workout[4] >= goal.distance:
+                                goal.completeTask()
+                index+=1
 
         gameDisplay.fill(BEIGE)
 
@@ -469,8 +486,16 @@ def menu():
         for text in text_Objects:
             #taskSurface.blit(pg.Surface((rect[0].w, rect[0].h)), (0, scrollbar.y_axis + rect[0].y))
             text[1].y = scrollbar.y_axis + text[2]
+            goal = text[3]
+            if goal.finishedInTime is True:
+                text[0] = largeText.render("Goal Completed!: " + goal.activity, True, BLACK)
+            elif goal.time == 0:
+                text[0] = largeText.render("Goal Not Completed :(", True, BLACK)
+            else:
+                text[0] = largeText.render("Goal: " + goal.activity + ", distance: " + str(goal.distance) + " km, in " + str(goal.time) + " days", True, BLACK)
             taskSurface.blit(text[0], text[1])
             scrollbar.draw(taskSurface)
+            #scrollbar.update()
         gameDisplay.blit(taskSurface, [(DISPLAY_WIDTH - taskWidth)//2, DISPLAY_HEIGHT * 0.5])
         
         
