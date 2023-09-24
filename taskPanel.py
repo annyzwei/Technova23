@@ -1,12 +1,12 @@
 # Imports
 import pygame as pg
-from attributes import appConsts as rg
+from attributes import appConsts
 
 
 # scroll bar: from https://github.com/edward344/scrollbar/blob/master/scrollbar.py
 
-screen_width = 660
-screen_height = 480
+screen_width = appConsts.DISPLAY_WIDTH * 0.74
+screen_height = appConsts.DISPLAY_HEIGHT * 0.29
 
 GRAY = (197,194,197)
 BLUE =(0,0,255)
@@ -57,27 +57,32 @@ class TaskPanel(object):
              
         
     def event_handler(self,event):
+        
         if event.type == pg.MOUSEBUTTONDOWN:
+            print("MOUSEDD BW")
             pos = pg.mouse.get_pos()
             if self.bar_rect.collidepoint(pos):
                 self.mouse_diff = pos[1] - self.bar_rect.y
                 self.on_bar = True
             elif self.bar_up.collidepoint(pos):
-                self.change_y = 5
+                self.change_y = 10
             elif self.bar_down.collidepoint(pos):
-                self.change_y = -5
+                self.change_y = -10
                 
         if event.type == pg.MOUSEBUTTONUP:
+            print("MOUSEDD BU")
             self.change_y = 0
             self.on_bar = False
         
         if event.type == pg.KEYDOWN:
+            print("MOUSEDD KD")
             if event.key == pg.K_UP:
-                self.change_y = 5
+                self.change_y = 10
             elif event.key == pg.K_DOWN:
-                self.change_y = -5
+                self.change_y = -10
                 
         if event.type == pg.KEYUP:
+            print("MOUSEDD KU")
             if event.key == pg.K_UP:
                 self.change_y = 0
             elif event.key == pg.K_DOWN:

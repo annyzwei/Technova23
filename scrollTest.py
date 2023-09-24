@@ -88,3 +88,49 @@ class ScrollBar(object):
             
         
 
+"""def main():
+    # Initialize all imported pygame modules
+    pygame.init()
+    # Set the width and height of the screen [width, height]
+    screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
+    # Set the current window caption
+    pygame.display.set_caption("ScrollBar")
+    #Loop until the user clicks the close button.
+    done = False
+    # Used to manage how fast the screen updates
+    clock = pygame.time.Clock()
+    # Load Image:
+    image = pygame.image.load("instruments.png").convert()
+    # Create scrollbar object 
+    scrollbar = ScrollBar(image.get_height())
+    # -------- Main Program Loop -----------
+    while not done:
+        # --- Main event loop
+        for event in pygame.event.get(): # User did something
+            if event.type == pygame.QUIT: # If user clicked close
+                done = True # Flag that we are done so we exit this loop
+            
+            scrollbar.event_handler(event)
+            
+        # --- Game logic should go here
+        scrollbar.update()
+        # First, clear the screen to white. Don't put other drawing commands
+        # above this, or they will be erased with this command.
+        screen.fill((255,255,255))
+
+        # --- Drawing code should go here
+        screen.blit(image,(0,scrollbar.y_axis))
+        scrollbar.draw(screen)
+        # --- Go ahead and update the screen with what we've drawn.
+        pygame.display.flip()
+
+        # --- Limit to 30 frames per second
+        clock.tick(30)
+
+    # Close the window and quit.
+    # If you forget this line, the program will 'hang'
+    # on exit if running from IDLE.
+    pygame.quit()
+
+if __name__ == '__main__':
+    main()"""

@@ -255,6 +255,11 @@ def menu():
     d = datetime(2023, 9, 1)
     gameRun = True
     start_time = datetime.now()
+    
+    # Create scroll bar object
+    image = pg.image.load("assets/background.jpeg").convert()
+    # Create scrollbar object 
+    scrollbar = taskPanel.TaskPanel(image.get_height())
 
     while gameRun:
         PLAY_MOUSE_POS = pg.mouse.get_pos()
@@ -267,9 +272,9 @@ def menu():
 
         largeText = pg.font.SysFont('garamond', 20)
 
-       # displayProfile()
+        # displayProfile()
 
-      #  displayMissions()
+        # displayMissions()
 
         SKILLS = Button(image=None, pos=(200, 460), 
                             text_input="SKILLZ", font=largeText, base_color=GREEN, hovering_color=BRIGHT_GREEN)
@@ -286,18 +291,6 @@ def menu():
         dragonAnimation()
         displayTimeScroll(d)
         
-        # Create scroll bar object
-        image = pg.image.load("assets/background.jpeg").convert()
-        scrollbar = taskPanel.TaskPanel(image.get_height())
-        #taskPanel.TaskPanel(image.get_height()) # Make it so that the image of the height corresponds to the # of tasks
-
-        scrollbar.update()
-        
-        # --- Drawing code should go here
-        taskSurface.blit(image, (0,scrollbar.y_axis))
-        scrollbar.draw(taskSurface)
-        gameDisplay.blit(taskSurface, [(DISPLAY_WIDTH - taskWidth)//2, DISPLAY_HEIGHT//2])
-        
 
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -310,7 +303,19 @@ def menu():
                     newGoalPage()
                     
             scrollbar.event_handler(event)
-        pg.display.update()
-        #clock.tick(60)
+            
+       
+         # --- Game logic should go here
+        scrollbar.update()
+
+        # --- Drawing code should go here
+        taskSurface.blit(image,(0,scrollbar.y_axis))
+        scrollbar.draw(taskSurface)
+        gameDisplay.blit(taskSurface, [(DISPLAY_WIDTH - taskWidth)//2, DISPLAY_HEIGHT * 0.5])
+        
+        
+        pg.display.flip()
+        clock.tick(60)
+
 
 menu()
