@@ -5,33 +5,30 @@ import numpy as np
 where occurrence is either "daily" or "weekly" (other gives time = 0)
     """
 class Task():
-    def __init__(self, activityName, occurrence, describe: str = ""):
+    def __init__(self, activityName, countdown, length): #, describe: str = ""):
         # Task/Ticket Properties
-        # Tasks include: Activity Name, Description, Times, Completed(boolean)
+        # Tasks include: Activity Name, Description, Days until completion, Completed(boolean)
         self.activity = activityName
-        self.description = describe
+        #self.description = describe
         self.completed = False
+        self.finishedInTime = False
+        self.time = int(countdown)
+        self.distance = int(length)
         
-        if occurrence == "daily":
-            self.time = 7
-        elif occurrence == "weekly":
-            self.time = 1
-        else:
-            self.time = 0
+    def dayPassed(self):
+        if self.time > 0:
+            self.time -= 1
             
-        self.doing = np.full(self.time, False)
+        # Future changes: once it reaches -5, get rid of it
     
-    # Determines whether the task was completed or not
     def isFinished(self):
-        finished = False
-        for i in range(len(self.doing)):
-            if self.doing[i]:
-                finished = True
-            else:
-                finished = False
-                break
+        return self.completed
+    
+    def completeTask(self):
+        self.completed = True
         
-        return finished
+        if self.time > 0:
+            self.finishedInTime = True
            
     
 

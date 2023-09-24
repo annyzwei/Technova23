@@ -2,10 +2,5 @@
 class appConsts():
     DISPLAY_WIDTH = 800
     DISPLAY_HEIGHT = 1000
-    BLACK = (0, 0, 0)
-    GREEN = (0,200,0)
-    BRIGHT_GREEN = (0,255,0)
-    LIGHT_BLUE = (202, 239, 250)
-    WHITE = (255, 255, 255)
-
-    DRAGON_ANIMATION_HEIGHT = 300
+    
+    # could put list of goals or people in here as well
