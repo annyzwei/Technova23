@@ -11,13 +11,7 @@ class Task():
         self.activity = activityName
         self.description = describe
         self.completed = False
-        
-        if occurrence == "daily":
-            self.time = 7
-        elif occurrence == "weekly":
-            self.time = 1
-        else:
-            self.time = 0
+        self.time = occurrence
             
         self.doing = np.full(self.time, False)
     

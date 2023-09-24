@@ -117,18 +117,24 @@ def newGoalPage():
         textRect.midright = (300, 450)
         textSurf_dist, textRect_dist = textObjects("Distance: ", largeText, BRIGHT_GREEN)   
         textRect_dist.midright = (300, 500)
-        textSurf_time, textRect_time = textObjects("Number of Days: ", largeText, BRIGHT_GREEN)   
+        textSurf_time, textRect_time = textObjects("Number of Days a Week: ", largeText, BRIGHT_GREEN)   
         textRect_time.midright = (300, 550)
         gameDisplay.blit(textSurf, textRect)
         gameDisplay.blit(textSurf_dist, textRect_dist)
         gameDisplay.blit(textSurf_time, textRect_time)
        # button("Menu", 50, 400, 100, 75, 20, GREEN, BRIGHT_GREEN, menu )
         pg.display.update()
-        MAINMENU = Button(image=None, pos=(640, 460), 
+        MAINMENU = Button(image=None, pos=(500, 375), 
                             text_input="MAIN MENU", font=largeText, base_color=GREEN, hovering_color=BRIGHT_GREEN)
 
         MAINMENU.changeColor(PLAY_MOUSE_POS)
         MAINMENU.update(gameDisplay)
+        
+        SUBMIT = Button(image=None, pos=(500, 625), 
+                            text_input="SUBMIT", font=largeText, base_color=GREEN, hovering_color=BRIGHT_GREEN)
+
+        SUBMIT.changeColor(PLAY_MOUSE_POS)
+        SUBMIT.update(gameDisplay)
 
         text_surface_a = largeText.render(activity_text, True, BLACK)
         input_rect_a = pg.Rect(350, 430, 300, 40)
@@ -146,9 +152,12 @@ def newGoalPage():
             elif event.type == pg.MOUSEBUTTONDOWN:
                 if MAINMENU.checkForInput(PLAY_MOUSE_POS):
                     menu()
+                elif SUBMIT.checkForInput(PLAY_MOUSE_POS):
+                    menu()
                 active_a = False
                 active_d = False
                 active_t = False
+                    
                 if input_rect_a.collidepoint(event.pos):
                     active_a = True
                 elif input_rect_d.collidepoint(event.pos):
