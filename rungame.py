@@ -16,6 +16,7 @@ GREEN = (0,200,0)
 BRIGHT_GREEN = (0,255,0)
 LIGHT_BLUE = (202, 239, 250)
 WHITE = (255, 255, 255)
+BEIGE = (250, 241, 225)
 
 
 DRAGON_ANIMATION_HEIGHT = 300
@@ -33,6 +34,7 @@ cloud_speed = 2
 
 
 dragon_sprite = pg.image.load("assets/dragon.png")
+scroll_sprite = pg.image.load("assets/scroll.png")
 
 gameDisplay = pg.display.set_mode((DISPLAY_WIDTH, DISPLAY_HEIGHT))
 pg.display.set_caption("A Dragon's Guide to Power")
@@ -89,7 +91,7 @@ def skillsPage():
                 if MAINMENU.checkForInput(PLAY_MOUSE_POS):
                     menu()
         pg.display.update()
-        #clock.tick(60)
+        clock.tick(60)
 
 def newGoalPage():
     while True:
@@ -116,7 +118,7 @@ def newGoalPage():
                 if MAINMENU.checkForInput(PLAY_MOUSE_POS):
                     menu()
         pg.display.update()
-        #clock.tick(60)
+        clock.tick(60)
 
 
 # Function to draw a triangle tree
@@ -132,10 +134,46 @@ def draw_cloud(x, y):
 
 def dragonAnimation():
     pg.draw.rect(gameDisplay, LIGHT_BLUE, [0, 0, DISPLAY_WIDTH, DRAGON_ANIMATION_HEIGHT])
-    dragon_sprite_small = pg.transform.scale(dragon_sprite, (170, 100))
+    for i in range(len(trees)):
+            x, y = trees[i]
+            draw_tree(x, y)
+            x -= tree_speed
+            trees[i] = (x, y)
+
+            # Reset tree's position when it goes off the screen
+            if x + tree_width < 0:
+                x = DISPLAY_HEIGHT + random.randint(50, 200)
+                trees[i] = (x, y)
+
+    for i in range(len(clouds)):
+        x, y = clouds[i]
+        draw_cloud(x, y)
+        x -= cloud_speed
+        clouds[i] = (x, y)
+
+        # Reset tree's position when it goes off the screen
+        if x + cloud_width < 0:
+            x = DISPLAY_HEIGHT + random.randint(50, 200)
+            clouds[i] = (x, y) 
+
+    dragon_sprite_small = pg.transform.scale(dragon_sprite, (190, 100))
     gameDisplay.blit(dragon_sprite_small, (300, 100))
 
     clock = pg.time.Clock()
+
+def displayTimeScroll(d):
+        scroll_x = 200
+        scroll_y = 0 
+        scroll_w = 350
+        scroll_h = 100
+
+        scroll_sprite_small = pg.transform.scale(scroll_sprite, (scroll_w, scroll_h))
+        gameDisplay.blit(scroll_sprite_small, (scroll_x, scroll_y))
+
+        largeText = pg.font.SysFont('garamond', 20)
+        textSurf, textRect = textObjects("Date: " + str(d.date()), largeText, BLACK)   
+        textRect.center = (scroll_x + scroll_w/2, scroll_y + scroll_h/2)
+        gameDisplay.blit(textSurf, textRect)
 
 def menu():
     d = datetime(2023, 9, 1)
@@ -149,15 +187,9 @@ def menu():
             start_time = datetime.now()
             d += timedelta(days=1)
 
-        gameDisplay.fill(WHITE)
+        gameDisplay.fill(BEIGE)
 
         largeText = pg.font.SysFont('garamond', 20)
-        textSurf, textRect = textObjects("Date: " + str(d.date()), largeText, BLACK)   
-        textRect.center = (400, 200)
-        gameDisplay.blit(textSurf, textRect)
-
-        
-
 
        # displayProfile()
 
@@ -175,32 +207,8 @@ def menu():
         GOALS.changeColor(PLAY_MOUSE_POS)
         GOALS.update(gameDisplay)
 
-        for i in range(len(trees)):
-            x, y = trees[i]
-            draw_tree(x, y)
-            x -= tree_speed
-            trees[i] = (x, y)
-
-            # Reset tree's position when it goes off the screen
-            if x + tree_width < 0:
-                x = DISPLAY_HEIGHT + random.randint(50, 200)
-                trees[i] = (x, y)
-
-        for i in range(len(clouds)):
-            x, y = clouds[i]
-            draw_cloud(x, y)
-            x -= cloud_speed
-            clouds[i] = (x, y)
-
-            # Reset tree's position when it goes off the screen
-            if x + cloud_width < 0:
-                x = DISPLAY_HEIGHT + random.randint(50, 200)
-                clouds[i] = (x, y) 
-        pg.display.flip()
-
-
         dragonAnimation()
-
+        displayTimeScroll(d)
 
 
 
@@ -214,7 +222,7 @@ def menu():
                     skillsPage()
                 elif GOALS.checkForInput(PLAY_MOUSE_POS):
                     newGoalPage()
-        pg.display.update()
-        #clock.tick(60)
+        pg.display.flip()
+        clock.tick(60)
 
 menu()
