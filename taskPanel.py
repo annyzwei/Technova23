@@ -69,19 +69,16 @@ class TaskPanel(object):
                 self.change_y = -10
                 
         if event.type == pg.MOUSEBUTTONUP:
-            print("MOUSEDD BU")
             self.change_y = 0
             self.on_bar = False
         
         if event.type == pg.KEYDOWN:
-            print("MOUSEDD KD")
             if event.key == pg.K_UP:
                 self.change_y = 10
             elif event.key == pg.K_DOWN:
                 self.change_y = -10
                 
         if event.type == pg.KEYUP:
-            print("MOUSEDD KU")
             if event.key == pg.K_UP:
                 self.change_y = 0
             elif event.key == pg.K_DOWN:

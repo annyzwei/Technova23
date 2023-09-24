@@ -5,15 +5,15 @@ import numpy as np
 where occurrence is either "daily" or "weekly" (other gives time = 0)
     """
 class Task():
-    def __init__(self, activityName: str = "", countdown: int = 1, length: int = 1): #, describe: str = ""):
+    def __init__(self, activityName, countdown, length): #, describe: str = ""):
         # Task/Ticket Properties
         # Tasks include: Activity Name, Description, Days until completion, Completed(boolean)
         self.activity = activityName
         #self.description = describe
         self.completed = False
         self.finishedInTime = False
-        self.time = countdown
-        self.distance = length
+        self.time = int(countdown)
+        self.distance = int(length)
         
     def dayPassed(self):
         if self.time > 0:
@@ -30,6 +30,8 @@ class Task():
         if self.time > 0:
             self.finishedInTime = True
            
+    def jsonable(self):
+        return self.__dict__
     
 
 # Our app suggested ones (suggest 1 per day)
