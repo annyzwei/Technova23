@@ -248,7 +248,6 @@ def skillsPage():
         clock.tick(60)
 
 def newGoalPage():
-    gameDisplay.fill(WHITE)
     # a: activity type
     # d: distance
     # c: time frame
@@ -258,7 +257,21 @@ def newGoalPage():
     activity_text = ""
     distance_text = ""
     time_text = ""
+
+    tree_pos = []
+    cloud_pos = []
+    for i in range (7):
+        tree_pos.append((random.randint(20, DISPLAY_WIDTH-20), DISPLAY_HEIGHT-200 ))
+    for i in range (3):
+        cloud_pos.append((random.randint(20, DISPLAY_WIDTH-20), 50 + random.randint(0, 40)))
+
+    gameDisplay.fill(LIGHT_BLUE)
     while True:
+        pg.draw.rect(gameDisplay, TREE_GREEN, [0, DISPLAY_HEIGHT-200, DISPLAY_WIDTH, 200])
+        for i in tree_pos:
+            draw_tree(i[0], i[1])
+        for i in cloud_pos:
+            draw_cloud(i[0], i[1])
         PLAY_MOUSE_POS = pg.mouse.get_pos()
         textSurf, textRect = textObjects("Activity: ", largeText, ROYAL_BLUE)   
         textSurf, textRect = textObjects("Activity: ", largeText, BRIGHT_GREEN)   
@@ -325,7 +338,7 @@ def newGoalPage():
                     active_t = True
                 # text_surface = largeText.render(input_text, True, BLACK)
             elif event.type == pg.KEYDOWN:
-                gameDisplay.fill(WHITE)
+                gameDisplay.fill(LIGHT_BLUE)
                 pg.display.update([input_rect_a, input_rect_d, input_rect_t])
                 if active_a:
                     if event.key == pg.K_RETURN:
