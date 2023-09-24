@@ -2,7 +2,7 @@
 __FIRED UP!__
 
 
-
+---------------- Ctrl + Alt + Delete ----------------
 
 <~>
  \ \,_____
@@ -21,7 +21,7 @@ __FIRED UP!__
 ------------------------------------------------
 
 
-
+Encouraging physical activity and a balanced lifestyle by analyzing trends from fitness apps and watches. Grow and become the strongest dragon that you can be!!
 
 
 
