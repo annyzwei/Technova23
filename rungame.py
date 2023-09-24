@@ -4,6 +4,8 @@ from datetime import datetime, timedelta
 from manipulate_health_data import wrkout_collection
 import time
 import sys
+import random
+
 
 pg.init()
 
@@ -15,7 +17,19 @@ BRIGHT_GREEN = (0,255,0)
 LIGHT_BLUE = (202, 239, 250)
 WHITE = (255, 255, 255)
 
+
 DRAGON_ANIMATION_HEIGHT = 300
+
+# Tree parameters
+tree_width = 30
+tree_height = 60
+tree_speed = 5
+TREE_GREEN = (34, 139, 34)
+
+# clouds
+cloud_width = 130
+cloud_height = 40
+cloud_speed = 2
 
 
 dragon_sprite = pg.image.load("assets/dragon.png")
@@ -27,6 +41,23 @@ clock = pg.time.Clock()
 goals = []
 gameRun = True
 newGoalRun = True
+
+
+trees = []
+clouds = []
+
+for _ in range(8):  
+    x = random.randint(DISPLAY_WIDTH, DISPLAY_WIDTH * 2)
+    y = DRAGON_ANIMATION_HEIGHT
+    trees.append((x, y))
+
+for _ in range(5):  #
+    x = random.randint(DISPLAY_WIDTH, DISPLAY_WIDTH * 2)
+    h_variation = random.randint(-15, 15)
+
+    y = 50 + h_variation #height of clouds
+    clouds.append((x, y))
+
 
 def textObjects(text, font, colour):
     textSurface = font.render(text, True, colour)
@@ -156,15 +187,24 @@ def newGoalPage():
         pg.display.update([input_rect_a, input_rect_d, input_rect_t])
         #clock.tick(60)
 
-def dragonAnimation():
-    pg.draw.rect(gameDisplay, LIGHT_BLUE, [0, 0, DISPLAY_WIDTH, DRAGON_ANIMATION_HEIGHT])
-    dragon_sprite_small = pg.transform.scale(dragon_sprite, (170, 100))
-    gameDisplay.blit(dragon_sprite_small, (300, 100))
+
+# Function to draw a triangle tree
+def draw_tree(x, y):
+    w_variation = 0#random.randint(-5, 5)
+    h_variation = 0#random.randint(-5, 10)
+    pg.draw.polygon(gameDisplay, TREE_GREEN, [(x, y), (x + (tree_width + w_variation)/ 2, y - (tree_height + h_variation)), (x + tree_width + w_variation, y)])
+
+
+# Function to draw a cloud
+def draw_cloud(x, y):
+    pg.draw.ellipse(gameDisplay, WHITE, (x, y, cloud_width, cloud_height))
 
 def dragonAnimation():
     pg.draw.rect(gameDisplay, LIGHT_BLUE, [0, 0, DISPLAY_WIDTH, DRAGON_ANIMATION_HEIGHT])
     dragon_sprite_small = pg.transform.scale(dragon_sprite, (170, 100))
     gameDisplay.blit(dragon_sprite_small, (300, 100))
+
+    clock = pg.time.Clock()
 
 def menu():
     d = datetime(2023, 9, 1)
@@ -179,8 +219,6 @@ def menu():
             d += timedelta(days=1)
 
         gameDisplay.fill(WHITE)
-
-        dragonAnimation()
 
         largeText = pg.font.SysFont('garamond', 20)
         textSurf, textRect = textObjects("Date: " + str(d.date()), largeText, BLACK)   
@@ -205,6 +243,35 @@ def menu():
 
         GOALS.changeColor(PLAY_MOUSE_POS)
         GOALS.update(gameDisplay)
+
+        for i in range(len(trees)):
+            x, y = trees[i]
+            draw_tree(x, y)
+            x -= tree_speed
+            trees[i] = (x, y)
+
+            # Reset tree's position when it goes off the screen
+            if x + tree_width < 0:
+                x = DISPLAY_HEIGHT + random.randint(50, 200)
+                trees[i] = (x, y)
+
+        for i in range(len(clouds)):
+            x, y = clouds[i]
+            draw_cloud(x, y)
+            x -= cloud_speed
+            clouds[i] = (x, y)
+
+            # Reset tree's position when it goes off the screen
+            if x + cloud_width < 0:
+                x = DISPLAY_HEIGHT + random.randint(50, 200)
+                clouds[i] = (x, y) 
+        pg.display.flip()
+
+
+        dragonAnimation()
+
+
+
 
 
         for event in pg.event.get():
