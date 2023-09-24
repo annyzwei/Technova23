@@ -2,7 +2,7 @@ import pygame as pg
 from button import Button
 from datetime import datetime, timedelta
 from manipulate_health_data import wrkout_collection
-import taskPanel, scrollTest
+import taskPanel, task
 from attributes import appConsts
 import sys
 import random
@@ -210,9 +210,9 @@ def newGoalPage():
         PLAY_MOUSE_POS = pg.mouse.get_pos()
         textSurf, textRect = textObjects("Activity: ", largeText, BRIGHT_GREEN)   
         textRect.midright = (300, 450)
-        textSurf_dist, textRect_dist = textObjects("Distance: ", largeText, BRIGHT_GREEN)   
+        textSurf_dist, textRect_dist = textObjects("Distance(km): ", largeText, BRIGHT_GREEN)   
         textRect_dist.midright = (300, 500)
-        textSurf_time, textRect_time = textObjects("Number of Days a Week: ", largeText, BRIGHT_GREEN)   
+        textSurf_time, textRect_time = textObjects("Number of Days to Complete it: ", largeText, BRIGHT_GREEN)   
         textRect_time.midright = (300, 550)
         gameDisplay.blit(textSurf, textRect)
         gameDisplay.blit(textSurf_dist, textRect_dist)
@@ -248,7 +248,11 @@ def newGoalPage():
                 if MAINMENU.checkForInput(PLAY_MOUSE_POS):
                     menu()
                 elif SUBMIT.checkForInput(PLAY_MOUSE_POS):
+                    # Create goal and head back to the main menu
+                    goals.append(task.Task(activity_text, time_text, distance_text))
+                    print(goals[0].activity)
                     menu()
+                    
                 active_a = False
                 active_d = False
                 active_t = False
@@ -370,6 +374,10 @@ def menu():
         if (datetime.now() - start_time).total_seconds() > 5:
             start_time = datetime.now()
             d += timedelta(days=1)
+            
+            # Decrement the days left for each of the goals
+            for i in range(len(goals)):
+                goals[i].dayPassed()
 
         gameDisplay.fill(BEIGE)
 
