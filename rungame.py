@@ -54,6 +54,8 @@ newGoalRun = True
 trees = []
 clouds = []
 
+largeText = pg.font.SysFont('garamond', 20)
+
 for _ in range(8):  
     x = random.randint(DISPLAY_WIDTH, DISPLAY_WIDTH * 2)
     y = DRAGON_ANIMATION_HEIGHT
@@ -187,7 +189,7 @@ def newGoalPage():
                         distance_text = ""
                     elif event.key == pg.K_BACKSPACE:
                         distance_text = distance_text[:-1]
-                    else:
+                    elif event.unicode.isdigit():
                         distance_text += event.unicode
                     text_surface = largeText.render(distance_text, True, BLACK)
                 if active_t:
@@ -196,7 +198,7 @@ def newGoalPage():
                         time_text = ""
                     elif event.key == pg.K_BACKSPACE:
                         time_text = time_text[:-1]
-                    else:
+                    elif event.unicode.isdigit():
                         time_text += event.unicode
                     text_surface = largeText.render(time_text, True, BLACK)
         pg.draw.rect(gameDisplay, BLACK, input_rect_a, 2)
@@ -264,6 +266,8 @@ def displayTimeScroll(d):
         textRect.center = (scroll_x + scroll_w/2, scroll_y + scroll_h/2)
         gameDisplay.blit(textSurf, textRect)
 
+        
+
 def menu():
     d = datetime(2023, 9, 1)
     gameRun = True
@@ -273,6 +277,23 @@ def menu():
     image = pg.image.load("assets/background.jpeg").convert()
     # Create scrollbar object 
     scrollbar = taskPanel.TaskPanel(image.get_height())
+    rect_objects = []
+    for i in range(20):
+        rect = pg.Rect(50, 50 + i * 30, DISPLAY_WIDTH * 0.75, 20)
+        colour = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
+        rect_objects.append((rect, colour))
+    text_Objects = []
+    for i in range(20):
+        largeText = pg.font.SysFont('garamond', 20)
+        textSurf, textRect = textObjects("Goal!", largeText, BLACK)  
+        textRect.x = 50
+        textRect.y = scrollbar.y_axis + i * 30
+        textRect.width = DISPLAY_WIDTH * 0.75
+        textRect.height = 20 
+        text_Objects.append([textSurf, textRect, textRect.y])
+
+
+    pg.display.flip()
 
     while gameRun:
         PLAY_MOUSE_POS = pg.mouse.get_pos()
@@ -323,7 +344,11 @@ def menu():
 
         # --- Drawing code should go here
         taskSurface.blit(image,(0,scrollbar.y_axis))
-        scrollbar.draw(taskSurface)
+        for text in text_Objects:
+            #taskSurface.blit(pg.Surface((rect[0].w, rect[0].h)), (0, scrollbar.y_axis + rect[0].y))
+            text[1].y = scrollbar.y_axis + text[2]
+            taskSurface.blit(text[0], text[1])
+            scrollbar.draw(taskSurface)
         gameDisplay.blit(taskSurface, [(DISPLAY_WIDTH - taskWidth)//2, DISPLAY_HEIGHT * 0.5])
         
         
