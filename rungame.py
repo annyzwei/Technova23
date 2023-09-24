@@ -213,9 +213,9 @@ def draw_portrait(x, y):
 
 data_x = []
 data_y = []
-for i in range(len(wrkout_collection)):
-    data_x.append(wrkout_collection[i][0])
-    data_y.append(wrkout_collection[i][1])
+for workout in wrkout_collection[1:]:
+    data_x.append(workout[0])
+    data_y.append(workout[1])
 
 
 def generate_plt(data_x, data_y):
