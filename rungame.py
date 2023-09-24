@@ -12,12 +12,18 @@ pg.init()
 
 DISPLAY_WIDTH = appConsts.DISPLAY_WIDTH
 DISPLAY_HEIGHT = appConsts.DISPLAY_HEIGHT
+
+# Design
+largeText = pg.font.Font('freesansbold.ttf', 20)
+scrollText = pg.font.SysFont('garamond', 20)
+        
 BLACK = (0, 0, 0)
 GREEN = (0,200,0)
 BRIGHT_GREEN = (0,255,0)
 LIGHT_BLUE = (202, 239, 250)
 WHITE = (255, 255, 255)
 BEIGE = (250, 241, 225)
+RED = (250, 0, 0)
 
 
 DRAGON_ANIMATION_HEIGHT = 300
@@ -77,7 +83,6 @@ def skillsPage():
     gameDisplay.fill(WHITE)
     while True:
         PLAY_MOUSE_POS = pg.mouse.get_pos()
-        largeText = pg.font.Font('freesansbold.ttf', 20)
         textSurf, textRect = textObjects("HIGHSCORE: ", largeText, BRIGHT_GREEN)   
         textRect.center = (400, 300)
         gameDisplay.blit(textSurf, textRect)
@@ -112,13 +117,14 @@ def newGoalPage():
     time_text = ""
     while True:
         PLAY_MOUSE_POS = pg.mouse.get_pos()
-        largeText = pg.font.Font('freesansbold.ttf', 20)
         textSurf, textRect = textObjects("Activity: ", largeText, BRIGHT_GREEN)   
         textRect.midright = (300, 450)
         textSurf_dist, textRect_dist = textObjects("Distance(km): ", largeText, BRIGHT_GREEN)   
         textRect_dist.midright = (300, 500)
-        textSurf_time, textRect_time = textObjects("Number of Days to Complete it: ", largeText, BRIGHT_GREEN)   
+        textSurf_time, textRect_time = textObjects("Number of Days to Complete: ", largeText, BRIGHT_GREEN)   
         textRect_time.midright = (300, 550)
+        textSurf_error, textRect_error = textObjects("ERROR: Sections Not Filled Correctly ", largeText, RED)   
+        textRect_error.midright = (410, 600)
         gameDisplay.blit(textSurf, textRect)
         gameDisplay.blit(textSurf_dist, textRect_dist)
         gameDisplay.blit(textSurf_time, textRect_time)
@@ -153,11 +159,15 @@ def newGoalPage():
                 if MAINMENU.checkForInput(PLAY_MOUSE_POS):
                     menu()
                 elif SUBMIT.checkForInput(PLAY_MOUSE_POS):
-                    # Create goal and head back to the main menu
-                    goals.append(task.Task(activity_text, time_text, distance_text))
-                    print(goals[0].activity)
-                    menu()
-                    
+                    if (len(activity_text) != 0) and isinstance(time_text, int) and isinstance(distance_text, int):
+                        # Create goal and head back to the main menu
+                        goals.append(task.Task(activity_text, time_text, distance_text))
+                        print(goals[0].activity)
+                        menu()
+                    else:
+                        gameDisplay.blit(textSurf_error, textRect_error)
+                        pg.display.update()
+                        
                 active_a = False
                 active_d = False
                 active_t = False
@@ -259,8 +269,7 @@ def displayTimeScroll(d):
         scroll_sprite_small = pg.transform.scale(scroll_sprite, (scroll_w, scroll_h))
         gameDisplay.blit(scroll_sprite_small, (scroll_x, scroll_y))
 
-        largeText = pg.font.SysFont('garamond', 20)
-        textSurf, textRect = textObjects("Date: " + str(d.date()), largeText, BLACK)   
+        textSurf, textRect = textObjects("Date: " + str(d.date()), scrollText, BLACK)   
         textRect.center = (scroll_x + scroll_w/2, scroll_y + scroll_h/2)
         gameDisplay.blit(textSurf, textRect)
 
@@ -287,21 +296,20 @@ def menu():
 
         gameDisplay.fill(BEIGE)
 
-        largeText = pg.font.SysFont('garamond', 20)
 
         # displayProfile()
 
         # displayMissions()
 
         SKILLS = Button(image=None, pos=(200, 460), 
-                            text_input="SKILLZ", font=largeText, base_color=GREEN, hovering_color=BRIGHT_GREEN)
+                            text_input="SKILLZ", font=scrollText, base_color=GREEN, hovering_color=BRIGHT_GREEN)
 
         SKILLS.changeColor(PLAY_MOUSE_POS)
         SKILLS.update(gameDisplay)
 
               #  displayMissions()
         GOALS = Button(image=None, pos=(640, 460), 
-                            text_input="GOALS", font=largeText, base_color=GREEN, hovering_color=BRIGHT_GREEN)
+                            text_input="GOALS", font=scrollText, base_color=GREEN, hovering_color=BRIGHT_GREEN)
 
         GOALS.changeColor(PLAY_MOUSE_POS)
         GOALS.update(gameDisplay)

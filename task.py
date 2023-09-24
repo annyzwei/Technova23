@@ -5,7 +5,7 @@ import numpy as np
 where occurrence is either "daily" or "weekly" (other gives time = 0)
     """
 class Task():
-    def __init__(self, activityName, countdown, length): #, describe: str = ""):
+    def __init__(self, activityName: str = "", countdown: int = 1, length: int = 1): #, describe: str = ""):
         # Task/Ticket Properties
         # Tasks include: Activity Name, Description, Days until completion, Completed(boolean)
         self.activity = activityName

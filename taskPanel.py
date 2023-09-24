@@ -59,7 +59,6 @@ class TaskPanel(object):
     def event_handler(self,event):
         
         if event.type == pg.MOUSEBUTTONDOWN:
-            print("MOUSEDD BW")
             pos = pg.mouse.get_pos()
             if self.bar_rect.collidepoint(pos):
                 self.mouse_diff = pos[1] - self.bar_rect.y
