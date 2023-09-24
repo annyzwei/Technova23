@@ -165,7 +165,7 @@ def newGoalPage():
                 if MAINMENU.checkForInput(PLAY_MOUSE_POS):
                     menu()
                 elif SUBMIT.checkForInput(PLAY_MOUSE_POS):
-                    if (len(activity_text) != 0) and len(str(time_text) != 0) and len(str(distance_text) != 0):
+                    if (len(activity_text) != 0) and (len(time_text) != 0) and (len(distance_text) != 0):
                         # Create goal and head back to the main menu
                         goals.append(task.Task(activity_text, time_text, distance_text))
                         print(goals[0].activity)
