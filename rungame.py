@@ -380,6 +380,8 @@ def newGoalPage():
         cloud_pos.append((random.randint(20, DISPLAY_WIDTH-20), 50 + random.randint(0, 40)))
 
     gameDisplay.fill(LIGHT_BLUE)
+    
+    show_error = False
     while True:
         pg.draw.rect(gameDisplay, TREE_GREEN, [0, DISPLAY_HEIGHT-200, DISPLAY_WIDTH, 200])
         for i in tree_pos:
@@ -388,19 +390,17 @@ def newGoalPage():
             draw_cloud(i[0], i[1])
         PLAY_MOUSE_POS = pg.mouse.get_pos()
         textSurf, textRect = textObjects("Activity: ", largeText, ROYAL_BLUE)   
-        textSurf, textRect = textObjects("Activity: ", largeText, BRIGHT_GREEN)   
         textRect.midright = (300, 450)
         textSurf_dist, textRect_dist = textObjects("Distance(km): ", largeText, ROYAL_BLUE)   
         textRect_dist.midright = (300, 500)
         textSurf_time, textRect_time = textObjects("Number of Days to Complete: ", largeText, ROYAL_BLUE)   
         textRect_time.midright = (300, 550)
         textSurf_error, textRect_error = textObjects("ERROR: Sections Not Filled Correctly ", largeText, RED)   
-        textRect_error.midright = (410, 600)
+        textRect_error.midright = (410, 625)
         gameDisplay.blit(textSurf, textRect)
         gameDisplay.blit(textSurf_dist, textRect_dist)
         gameDisplay.blit(textSurf_time, textRect_time)
 
-        pg.display.update()
         MAINMENU = Button(image=None, pos=(500, 375), 
                             text_input="MAIN MENU", font=largeText, base_color=BROWN, hovering_color=BROWN_PINK)
 
@@ -408,7 +408,7 @@ def newGoalPage():
         MAINMENU.update(gameDisplay)
         
         SUBMIT = Button(image=None, pos=(500, 625), 
-                            text_input="SUBMIT", font=largeText, base_color=GREEN, hovering_color=BRIGHT_GREEN)
+                            text_input="SUBMIT", font=largeText, base_color=BROWN, hovering_color=BRIGHT_GREEN)
 
         SUBMIT.changeColor(PLAY_MOUSE_POS)
         SUBMIT.update(gameDisplay)
@@ -421,6 +421,11 @@ def newGoalPage():
 
         text_surface_t = largeText.render(time_text, True, BLACK)
         input_rect_t = pg.Rect(350, 530, 300, 40)
+        
+        if (show_error):
+            gameDisplay.blit(textSurf_error, textRect_error)
+        
+        pg.display.update()
         
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -435,10 +440,10 @@ def newGoalPage():
                         # Create goal and head back to the main menu
                         user.goals.append(task.Task(activity_text, time_text, distance_text))
                         print(user.goals[0].activity)
+                        show_error = False
                         menu()
                     else:
-                        gameDisplay.blit(textSurf_error, textRect_error)
-                        pg.display.update()
+                        show_error = True
                         
                 active_a = False
                 active_d = False
@@ -671,7 +676,7 @@ def menu():
             taskSurface.blit(text[0], text[1])
             scrollbar.draw(taskSurface)
             #scrollbar.update()
-        gameDisplay.blit(taskSurface, [(DISPLAY_WIDTH - taskWidth)//2, DISPLAY_HEIGHT * 0.5])
+        gameDisplay.blit(taskSurface, [(DISPLAY_WIDTH - taskWidth)//2, DISPLAY_HEIGHT * 0.63])
         
         
         pg.display.flip()
